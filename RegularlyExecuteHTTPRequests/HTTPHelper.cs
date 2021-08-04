@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,99 +11,111 @@ namespace RegularlyExecuteHTTPRequests
 {
     class HTTPHelper
     {
-        private static string BaseUri;
-        public HTTPHelper(string baseUri)
+        public static string HttpGet(string url, Dictionary<String, String> param)
         {
-            BaseUri = baseUri;
+            if (param != null) //有参数的情况下，拼接url
+            {
+                url = url + "?";
+                foreach (var item in param)
+                {
+                    url = url + item.Key + "=" + item.Value + "&";
+                }
+                url = url.Substring(0, url.Length - 1);
+            }
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;//创建请求
+            request.Method = "GET"; //请求方法为GET
+            HttpWebResponse res; //定义返回的response
+            try
+            {
+                res = (HttpWebResponse)request.GetResponse(); //此处发送了请求并获得响应
+            }
+            catch (WebException ex)
+            {
+                res = (HttpWebResponse)ex.Response;
+            }
+            StreamReader sr = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
+            string content = sr.ReadToEnd(); //响应转化为String字符串
+            return content;
         }
 
-        #region Delete方式
-        public string Delete(string data, string uri)
+        public static string HttpPut(string url, Dictionary<String, object> param)
         {
-            return CommonHttpRequest(data, uri, "DELETE");
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest; //创建请求
+            CookieContainer cookieContainer = new CookieContainer();
+            request.CookieContainer = cookieContainer;
+            request.AllowAutoRedirect = true;
+            //request.AllowReadStreamBuffering = true;
+            request.MaximumResponseHeadersLength = 1024;
+            request.Method = "Put"; //请求方式为post
+            request.AllowAutoRedirect = true;
+            request.MaximumResponseHeadersLength = 1024;
+            request.ContentType = "application/json";
+            JObject json = new JObject();
+            if (param.Count != 0) //将参数添加到json对象中
+            {
+                foreach (var item in param)
+                {
+                    json.Add(item.Key, item.Value.ToString());
+                }
+            }
+            string jsonstring = json.ToString();//获得参数的json字符串
+            byte[] jsonbyte = Encoding.UTF8.GetBytes(jsonstring);
+            Stream postStream = request.GetRequestStream();
+            postStream.Write(jsonbyte, 0, jsonbyte.Length);
+            postStream.Close();
+            //发送请求并获取相应回应数据       
+            HttpWebResponse res;
+            try
+            {
+                res = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                res = (HttpWebResponse)ex.Response;
+            }
+            StreamReader sr = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
+            string content = sr.ReadToEnd(); //获得响应字符串
+            return content;
         }
 
-        public string Delete(string uri)
+        public static string HttpPost(string url, Dictionary<String, String> param)
         {
-            //Web访问对象64
-            string serviceUrl = string.Format("{0}/{1}", BaseUri, uri);
-            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(serviceUrl);
-            myRequest.Method = "DELETE";
-            // 获得接口返回值68
-            HttpWebResponse myResponse = (HttpWebResponse)myRequest.GetResponse();
-            StreamReader reader = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
-            //string ReturnXml = HttpUtility.UrlDecode(reader.ReadToEnd());
-            string ReturnXml = reader.ReadToEnd();
-            reader.Close();
-            myResponse.Close();
-            return ReturnXml;
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest; //创建请求
+            CookieContainer cookieContainer = new CookieContainer();
+            request.CookieContainer = cookieContainer;
+            request.AllowAutoRedirect = true;
+            //request.AllowReadStreamBuffering = true;
+            request.MaximumResponseHeadersLength = 1024;
+            request.Method = "POST"; //请求方式为post
+            request.AllowAutoRedirect = true;
+            request.MaximumResponseHeadersLength = 1024;
+            request.ContentType = "application/json";
+            JObject json = new JObject();
+            if (param.Count != 0) //将参数添加到json对象中
+            {
+                foreach (var item in param)
+                {
+                    json.Add(item.Key, item.Value);
+                }
+            }
+            string jsonstring = json.ToString();//获得参数的json字符串
+            byte[] jsonbyte = Encoding.UTF8.GetBytes(jsonstring);
+            Stream postStream = request.GetRequestStream();
+            postStream.Write(jsonbyte, 0, jsonbyte.Length);
+            postStream.Close();
+            //发送请求并获取相应回应数据       
+            HttpWebResponse res;
+            try
+            {
+                res = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                res = (HttpWebResponse)ex.Response;
+            }
+            StreamReader sr = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
+            string content = sr.ReadToEnd(); //获得响应字符串
+            return content;
         }
-        #endregion
-
-        #region Put方式
-        public string Put(string data, string uri)
-        {
-            return CommonHttpRequest(data, uri, "PUT");
-        }
-        #endregion
-
-        #region POST方式实现
-
-        public string Post(string data, string uri)
-        {
-            return CommonHttpRequest(data, uri, "POST");
-        }
-
-        public string CommonHttpRequest(string data, string uri, string type)
-        {
-            //Web访问对象，构造请求的url地址
-            string serviceUrl = string.Format("{0}/{1}", BaseUri, uri);
-
-            //构造http请求的对象
-            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(serviceUrl);
-            //转成网络流
-            byte[] buf = System.Text.Encoding.GetEncoding("UTF-8").GetBytes(data);
-            //设置
-            myRequest.Method = type;
-            myRequest.ContentLength = buf.Length;
-            myRequest.ContentType = "application/json";
-            myRequest.MaximumAutomaticRedirections = 1;
-            myRequest.AllowAutoRedirect = true;
-            // 发送请求
-            Stream newStream = myRequest.GetRequestStream();
-            newStream.Write(buf, 0, buf.Length);
-            newStream.Close();
-            // 获得接口返回值
-            HttpWebResponse myResponse = (HttpWebResponse)myRequest.GetResponse();
-            StreamReader reader = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
-            string ReturnXml = reader.ReadToEnd();
-            reader.Close();
-            myResponse.Close();
-            return ReturnXml;
-        }
-        #endregion
-
-        #region GET方式实现
-        public static string Get(string uri)
-        {
-            //Web访问对象64
-            string serviceUrl = string.Format("{0}/{1}", BaseUri, uri);
-
-            //构造一个Web请求的对象
-            //HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(serviceUrl);
-            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(uri);
-            // 获得接口返回值68
-            //获取web请求的响应的内容
-            HttpWebResponse myResponse = (HttpWebResponse)myRequest.GetResponse();
-
-            //通过响应流构造一个StreamReader
-            StreamReader reader = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
-            //string ReturnXml = HttpUtility.UrlDecode(reader.ReadToEnd());
-            string ReturnXml = reader.ReadToEnd();
-            reader.Close();
-            myResponse.Close();
-            return ReturnXml;
-        }
-        #endregion
     }
 }
