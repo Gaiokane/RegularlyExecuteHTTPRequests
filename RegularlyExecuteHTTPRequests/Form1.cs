@@ -42,14 +42,136 @@ namespace RegularlyExecuteHTTPRequests
         string[] sqlQuerys;
         static string noMatch = "";
 
-        Regex rgGetDateTimeAll = new Regex("{{time(d|h|m|s)(\\+|\\-)\\d*:\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31) (((0|1)[0-9])|(2[0-3])):((0|1|2|3|4|5)[0-9]):((0|1|2|3|4|5)[0-9])}}");//{{time(d|h|m|s)(+|-)7:2020-03-29 20:00:00}}取整块 日、小时、分钟、秒
-        Regex rgGetDateTimeDiff = new Regex("(d|h|m|s)(\\+|\\-)\\d*");//{{timed+-7:2020-03-29 20:00:00}}取(d|h|m|s)(+|-)数字
-        Regex rgGetDateTime = new Regex("\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31) (((0|1)[0-9])|(2[0-3])):((0|1|2|3|4|5)[0-9]):((0|1|2|3|4|5)[0-9])");//{{timed+-7:2020-03-29 20:00:00}}取时间
+        public Regex rgGetDateTimeAll = new Regex("{{time(d|h|m|s)(\\+|\\-)\\d*:\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31) (((0|1)[0-9])|(2[0-3])):((0|1|2|3|4|5)[0-9]):((0|1|2|3|4|5)[0-9])}}");//{{time(d|h|m|s)(+|-)7:2020-03-29 20:00:00}}取整块 日、小时、分钟、秒
+        public Regex rgGetDateTimeDiff = new Regex("(d|h|m|s)(\\+|\\-)\\d*");//{{timed+-7:2020-03-29 20:00:00}}取(d|h|m|s)(+|-)数字
+        public Regex rgGetDateTime = new Regex("\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31) (((0|1)[0-9])|(2[0-3])):((0|1|2|3|4|5)[0-9]):((0|1|2|3|4|5)[0-9])");//{{timed+-7:2020-03-29 20:00:00}}取时间
 
-        Regex rgGetOnTheHourAll = new Regex("{{onthehour}}");//{{onthehour}}取整块
+        public Regex rgGetOnTheHourAll = new Regex("{{onthehour}}");//{{onthehour}}取整块
 
-        Regex rgGetOnTheHourCustomAll = new Regex("{{onthehour(d|h|m|s)(\\+|\\-)\\d*}}");//{{onthehour(d|h|m|s)(+|-)7}}取整块 日、小时、分钟、秒
-        Regex rgGetOnTheHourCustomDiff = new Regex("(d|h|m|s)(\\+|\\-)\\d*");//{{onthehourd+-7}}取(d|h|m|s)(+|-)数字
+        public Regex rgGetOnTheHourCustomAll = new Regex("{{onthehour(\\+|\\-)\\d*}}");//{{onthehour(+|-)7}}取整块 小时
+        public Regex rgGetOnTheHourCustomDiff = new Regex("(\\+|\\-)\\d*");//{{onthehour+-7}}取(+|-)数字
+
+        //{{onthehour}}
+        //{{onthehour+7}}
+        private void button4_Click(object sender, EventArgs e)
+        {
+            noMatch = "";
+            int times = 1;
+            sqlQuerys = new string[times];
+            for (int i = 0; i < times; i++)
+            {
+                sqlQuerys[i] = richTextBox1.Text.Trim();
+            }
+
+            #region 判断是否有匹配{{onthehour}}
+            //判断是否有匹配{{onthehour}}
+            if (rgGetOnTheHourAll.IsMatch(sqlQuerys[0]))
+            {
+                getOnTheHour(sqlQuerys);
+            }
+            else
+            {
+                noMatch += "没有匹配项{{onthehour}}\n";
+            }
+            #endregion
+
+            #region 判断是否有匹配{{onthehour(+|-)7}}
+            //判断是否有匹配{{onthehour(+|-)7}}
+            if (rgGetOnTheHourCustomAll.IsMatch(sqlQuerys[0]))
+            {
+                GetOnTheHourCustom(sqlQuerys);
+            }
+            else
+            {
+                noMatch += "没有匹配项{{onthehour(+|-)7}}\n";
+            }
+            #endregion
+
+            noMatch += sqlQuerys[0] + "\n";
+            richTextBox2.Text += noMatch + "\n";
+        }
+
+        #region 将{{onthehour}}替换为当前整点时间
+        /// <summary>
+        /// 将{{onthehour}}替换为当前整点时间
+        /// </summary>
+        /// <param name="sourceSQL">原始SQL数组</param>
+        /// <returns>替换完的数组</returns>
+        public string[] getOnTheHour(string[] sourceSQL)
+        {
+            //{{onthehour}}
+
+            Match matchOnTheHour;
+
+            while (rgGetOnTheHourAll.Match(sourceSQL[0]).Success == true)
+            {
+                for (int i = 0; i < sourceSQL.Length; i++)
+                {
+                    matchOnTheHour = rgGetOnTheHourAll.Match(sourceSQL[i]);//{{onthehour}}取整块
+
+                    string nowdate = DateTime.Now.ToString("yyyy-MM-dd");
+                    string nowtimehour = DateTime.Now.Hour.ToString();
+                    //MessageBox.Show(nowdate + "\r\n" + nowtimehour);
+                    DateTime dt = Convert.ToDateTime(nowdate + " " + nowtimehour + ":00:00");
+                    //MessageBox.Show(dt.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                    sourceSQL[i] = rgGetOnTheHourAll.Replace(sourceSQL[i], dt.ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                }
+            }
+
+            return sourceSQL;
+        }
+        #endregion
+
+        #region 将{{onthehour(+|-)7}}替换为当前整点时间并+/-小时
+        /// <summary>
+        /// 将{{onthehour(+|-)7}}替换为当前整点时间并+/-小时
+        /// </summary>
+        /// <param name="sourceSQL">原始SQL数组</param>
+        /// <returns>替换完的数组</returns>
+        public string[] GetOnTheHourCustom(string[] sourceSQL)
+        {
+            //{{onthehour+-7}}
+
+            Match matchOnTheHourCustomAll;
+            Match matchOnTheHourCustomDiff;
+
+            while (rgGetOnTheHourCustomAll.Match(sourceSQL[0]).Success == true)
+            {
+                for (int i = 0; i < sourceSQL.Length; i++)
+                {
+                    matchOnTheHourCustomAll = rgGetOnTheHourCustomAll.Match(sourceSQL[i]);//{{onthehour(+|-)7}}取整块 小时
+                    matchOnTheHourCustomDiff = rgGetOnTheHourCustomDiff.Match(matchOnTheHourCustomAll.Groups[0].Value);//{{onthehour+-7}}取(+|-)数字
+
+                    string nowdate = DateTime.Now.ToString("yyyy-MM-dd");
+                    string nowtimehour = DateTime.Now.Hour.ToString();
+
+                    string str = matchOnTheHourCustomDiff.Groups[0].Value;//取(+|-)数字
+                    string symbol = str.Substring(0, 1);//(d|h|m|s)
+                    int length = Convert.ToInt32(str.Substring(1, str.Length - 1));//数字
+
+                    DateTime dt = Convert.ToDateTime(nowdate + " " + nowtimehour + ":00:00");
+
+                    if (symbol == "+")//+
+                    {
+                        //用这条，替换的时候 如果有相同匹配对象，会全部替换成同一个值
+                        //sourceSQL[i] = sourceSQL[i].Replace(matchOnTheHourCustomAll.Groups[0].Value, dt.AddHours(length).ToString("yyyy-MM-dd HH:mm:ss"));//小时+
+                        //用这条，仅替换第一个匹配对象
+                        sourceSQL[i] = rgGetOnTheHourCustomAll.Replace(sourceSQL[i], dt.AddHours(length).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                    }
+                    if (symbol == "-")//-
+                    {
+                        //用这条，替换的时候 如果有相同匹配对象，会全部替换成同一个值
+                        //sourceSQL[i] = sourceSQL[i].Replace(matchOnTheHourCustomAll.Groups[0].Value, dt.AddHours(-length).ToString("yyyy-MM-dd HH:mm:ss"));//小时-
+                        //用这条，仅替换第一个匹配对象
+                        sourceSQL[i] = rgGetOnTheHourCustomAll.Replace(sourceSQL[i], dt.AddHours(-length).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                    }
+                }
+            }
+
+            return sourceSQL;
+        }
+        #endregion
 
         public Form1()
         {
@@ -61,16 +183,19 @@ namespace RegularlyExecuteHTTPRequests
             richTextBox1.Text = "{\"t0\":\"1627660800000000000\",\"t1\":\"1627660800000000000\",\"name\":\"point_audit_1\"}";
             richTextBox1.Text = "{\"t0\":\"{{timed+1:2021-07-08 00:00:00}}\",\"t1\":\"{{timed+1:2021-07-08 00:00:00}}\",\"name\":\"point_audit_1\",\"matcher-sn\":\"sn =~ /^(210)$/\",\"sn\":\"210\"}";
             richTextBox1.Text = "{\"t0\":\"{{timed+1:2020-06-01 00:00:00}}\",\"t1\":\"{{timed+1:2021-07-08 00:00:00}}\",\"name\":\"point_audit_1\"}";
+            richTextBox1.Text = "{\"fromTime\":\"{{onthehour-48}}\",\"toTime\":\"{{onthehour-1}}\"}";
 
             textBox2.Text = "http://192.168.30.73:9002/admin/task";
             textBox2.Text = "http://127.0.0.1/admin/task";
+            textBox2.Text = "http://127.0.0.1:9902/api/service";
 
-            textBox1.Text = "407";
+            textBox1.Text = "1";
 
             textBox1.Select();
             textBox1.Focus();
 
             textBox_cron.Text = "0/2 * * * * ?";
+            textBox_cron.Text = "0 17 0 * * ?";
 
             //MessageBox.Show(DateTimeToTstamp(Convert.ToDateTime("2021-07-19 20:09:28")).ToString());
             //MessageBox.Show(TstampToDateTime("1626696568").ToString("yyyy-MM-dd HH:mm:ss"));
@@ -79,6 +204,12 @@ namespace RegularlyExecuteHTTPRequests
             //RichTextBox增加右键菜单
             RichTextBoxMenu richTextBoxMenu_richTextBox1 = new RichTextBoxMenu(richTextBox1);
             RichTextBoxMenu richTextBoxMenu_richTextBox2 = new RichTextBoxMenu(richTextBox2);
+
+            string nowdate = DateTime.Now.ToString("yyyy-MM-dd");
+            string nowtimehour = DateTime.Now.Hour.ToString();
+            //MessageBox.Show(nowdate + "\r\n" + nowtimehour);
+            DateTime dt = Convert.ToDateTime(nowdate + " " + nowtimehour + ":00:00");
+            //MessageBox.Show(dt.ToString("yyyy-MM-dd HH:mm:ss"));
 
         }
 
@@ -160,6 +291,30 @@ namespace RegularlyExecuteHTTPRequests
                 }
                 #endregion
 
+                #region 判断是否有匹配{{onthehour}}
+                //判断是否有匹配{{onthehour}}
+                if (rgGetOnTheHourAll.IsMatch(sqlQuerys[0]))
+                {
+                    getOnTheHour(sqlQuerys);
+                }
+                else
+                {
+                    noMatch += "没有匹配项{{onthehour}}\n";
+                }
+                #endregion
+
+                #region 判断是否有匹配{{onthehour(+|-)7}}
+                //判断是否有匹配{{onthehour(+|-)7}}
+                if (rgGetOnTheHourCustomAll.IsMatch(sqlQuerys[0]))
+                {
+                    GetOnTheHourCustom(sqlQuerys);
+                }
+                else
+                {
+                    noMatch += "没有匹配项{{onthehour(+|-)7}}\n";
+                }
+                #endregion
+
                 JavaScriptSerializer s = new JavaScriptSerializer();
 
                 richTextBox2.Text = "";
@@ -194,7 +349,7 @@ namespace RegularlyExecuteHTTPRequests
 
         }
 
-        private string ConvertJsonString(string str)
+        public string ConvertJsonString(string str)
 
         {
             try
@@ -296,7 +451,7 @@ namespace RegularlyExecuteHTTPRequests
             return content;
         }
 
-        public static string HttpPost(string url, Dictionary<String, String> param)
+        public static string HttpPost(string url, Dictionary<String, object> param)
         {
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest; //创建请求
             CookieContainer cookieContainer = new CookieContainer();
@@ -313,7 +468,7 @@ namespace RegularlyExecuteHTTPRequests
             {
                 foreach (var item in param)
                 {
-                    json.Add(item.Key, item.Value);
+                    json.Add(item.Key, item.Value.ToString());
                 }
             }
             string jsonstring = json.ToString();//获得参数的json字符串
@@ -498,8 +653,12 @@ namespace RegularlyExecuteHTTPRequests
               .Build()
               as ITrigger;
 
+            //MessageBox.Show(textBox2.Text.Trim());
+            //MessageBox.Show(richTextBox1.Text.Trim());
+
             // 设置初始参数
             job.JobDataMap.Put(SendMessageJob.url, textBox2.Text.Trim());
+            job.JobDataMap.Put(SendMessageJob.body, richTextBox1.Text.Trim());
 
             //4.将job和trigger加入到作业调度池中
             scheduler.ScheduleJob(job, _CronTrigger);
@@ -542,8 +701,9 @@ namespace RegularlyExecuteHTTPRequests
     }
     public class SendMessageJob : IJob
     {
-        public const string url = "111";
-        public const string backresult = "111";
+        public const string url = "url";
+        public const string body = "body";
+        public const string backresult = "backresult";
 
         /// <summary>
         /// 创建要执行的作业
@@ -554,6 +714,7 @@ namespace RegularlyExecuteHTTPRequests
         {
             JobDataMap data = context.JobDetail.JobDataMap;
             string Url = data.GetString(url);
+            string Body = data.GetString(body);
 
             await Task.Run(() =>
             {
@@ -561,8 +722,65 @@ namespace RegularlyExecuteHTTPRequests
                 //richTextBox2.Text += "你好啊！";
 
                 //MessageBox.Show("你好啊！");
-                MessageBox.Show(HTTPHelper.HttpGet(Url, null));
-                data.Put(backresult, "执行b");
+                //MessageBox.Show(HTTPHelper.HttpGet(Url, null));
+                //data.Put(backresult, "执行b");
+
+                if (string.IsNullOrEmpty(Body))
+                {
+                    MessageBox.Show("body不能为空");
+                }
+                else
+                {
+                    string[] sqlQuerys = new string[1];
+                    sqlQuerys[0] = Body;
+                    string noMatch = "";
+
+                    Form1 f1 = new Form1();
+
+                    #region 判断是否有匹配{{onthehour}}
+                    //判断是否有匹配{{onthehour}}
+                    if (f1.rgGetOnTheHourAll.IsMatch(sqlQuerys[0]))
+                    {
+                        f1.getOnTheHour(sqlQuerys);
+                    }
+                    else
+                    {
+                        noMatch += "没有匹配项{{onthehour}}\n";
+                    }
+                    #endregion
+
+                    #region 判断是否有匹配{{onthehour(+|-)7}}
+                    //判断是否有匹配{{onthehour(+|-)7}}
+                    if (f1.rgGetOnTheHourCustomAll.IsMatch(sqlQuerys[0]))
+                    {
+                        f1.GetOnTheHourCustom(sqlQuerys);
+                    }
+                    else
+                    {
+                        noMatch += "没有匹配项{{onthehour(+|-)7}}\n";
+                    }
+                    #endregion
+
+                    string[] strlines = noMatch.Split(new string[] { "\n" }, StringSplitOptions.None);
+                    int linescount = strlines.Count() - 1;
+                    //MessageBox.Show((strlines.Count() - 1).ToString());
+
+                    if (linescount > 1)
+                    {
+                        MessageBox.Show(noMatch + "\n" + "取消操作");
+                    }
+                    else
+                    {
+                        JavaScriptSerializer s = new JavaScriptSerializer();
+                        Dictionary<string, object> JsonData = (Dictionary<string, object>)s.DeserializeObject(f1.ConvertJsonString(sqlQuerys[0]));
+
+                        //MessageBox.Show(Url + "\n" + Body + "\n" + noMatch + "\n" + sqlQuerys[0] + "\n" + JsonData.Values);
+
+                        //string result = HTTPHelper.HttpPost(Url, JsonData);
+                        string result = HTTPHelper.HttpPost(Url, JsonData);
+                        MessageBox.Show(result);
+                    }
+                }
             });
         }
     }

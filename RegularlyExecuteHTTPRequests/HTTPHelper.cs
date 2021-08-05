@@ -78,7 +78,7 @@ namespace RegularlyExecuteHTTPRequests
             return content;
         }
 
-        public static string HttpPost(string url, Dictionary<String, String> param)
+        public static string HttpPost(string url, Dictionary<String, object> param)
         {
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest; //创建请求
             CookieContainer cookieContainer = new CookieContainer();
@@ -95,7 +95,7 @@ namespace RegularlyExecuteHTTPRequests
             {
                 foreach (var item in param)
                 {
-                    json.Add(item.Key, item.Value);
+                    json.Add(item.Key, item.Value.ToString());
                 }
             }
             string jsonstring = json.ToString();//获得参数的json字符串
