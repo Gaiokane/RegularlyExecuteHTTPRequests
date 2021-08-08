@@ -53,6 +53,7 @@ namespace RegularlyExecuteHTTPRequests
 
         //{{onthehour}}
         //{{onthehour+7}}
+
         private void button4_Click(object sender, EventArgs e)
         {
             noMatch = "";
@@ -211,6 +212,36 @@ namespace RegularlyExecuteHTTPRequests
             DateTime dt = Convert.ToDateTime(nowdate + " " + nowtimehour + ":00:00");
             //MessageBox.Show(dt.ToString("yyyy-MM-dd HH:mm:ss"));
 
+            //配置文件读取默认配置
+            ConfigSettings.getConfigSettings();
+            ConfigSettings.setDefaultConfigSettings();
+            ConfigSettings.getConfigSettings();
+            DefaultConfigSettingsFill();
+
+        }
+
+        private void DefaultConfigSettingsFill()
+        {
+            textBox2.Text = ConfigSettings.default_url;
+            richTextBox1.Text = ConfigSettings.default_json;
+            textBox_cron.Text = ConfigSettings.default_cron;
+
+            if (ConfigSettings.control_enable=="true")
+            {
+                textBox1.Enabled = true;
+                btn_DELETE.Enabled = true;
+                btn_PUT.Enabled = true;
+                btn_POST.Enabled = true;
+                btn_GET.Enabled = true;
+            }
+            else
+            {
+                textBox1.Enabled = false;
+                btn_DELETE.Enabled = false;
+                btn_PUT.Enabled = false;
+                btn_POST.Enabled = false;
+                btn_GET.Enabled = false;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -638,6 +669,27 @@ namespace RegularlyExecuteHTTPRequests
         }
         #endregion
 
+        public static string MillisecondsToRightTimes(double milliSeconds)
+        {
+            string result = "";
+            double temp = 0;
+            if (milliSeconds >= 1000)
+            {
+                temp = milliSeconds / 1000;
+                result = temp + " 秒";
+            }
+            else if (milliSeconds >= 60000)
+            {
+                temp = milliSeconds / 60000;
+                result = temp + " 分钟";
+            }
+            else
+            {
+                result = milliSeconds + " 毫秒";
+            }
+            return result;
+        }
+
         private async void button2_Click(object sender, EventArgs e)
         {
             //创建调度单元
@@ -673,6 +725,9 @@ namespace RegularlyExecuteHTTPRequests
             Task<IScheduler> tsk = StdSchedulerFactory.GetDefaultScheduler();
             IScheduler scheduler = tsk.Result;
             scheduler.Shutdown();
+
+            PublicVariables.execTimesCronReset();
+
             richTextBox2.Text += "\r\n定时结束";
         }
 
@@ -771,6 +826,7 @@ namespace RegularlyExecuteHTTPRequests
                     }
                     else
                     {
+                        DateTime execStart = DateTime.Now;
                         JavaScriptSerializer s = new JavaScriptSerializer();
                         Dictionary<string, object> JsonData = (Dictionary<string, object>)s.DeserializeObject(f1.ConvertJsonString(sqlQuerys[0]));
 
@@ -778,7 +834,17 @@ namespace RegularlyExecuteHTTPRequests
 
                         //string result = HTTPHelper.HttpPost(Url, JsonData);
                         string result = HTTPHelper.HttpPost(Url, JsonData);
-                        MessageBox.Show(result);
+                        //Thread.Sleep(60000);
+                        DateTime execEnd = DateTime.Now;
+                        TimeSpan ts = execEnd - execStart;
+
+                        PublicVariables.execTimesCronAddOne();
+                        MessageBox.Show(
+                            "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
+                            "开始执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
+                            "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
+                            "执行结果：\r\n" + result
+                            );
                     }
                 }
             });

@@ -44,6 +44,7 @@
             this.textBox_cron = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btn_DELETE
@@ -178,7 +179,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 12);
             this.label3.TabIndex = 14;
-            this.label3.Text = "Corn表达式：";
+            this.label3.Text = "Cron表达式：";
             // 
             // button4
             // 
@@ -190,11 +191,22 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(586, 263);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(215, 96);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "{{onthehour}}：取当前整点小时\r\n\r\n{{onthehour(+|-)小时数}}：\r\n取当前整点小时+或-指定小时数\r\n\r\n以上时间格式均为yyyy-" +
+    "MM-dd HH:mm:ss\r\n\r\n可点击测试正则查看生成的时间";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox_cron);
@@ -238,6 +250,7 @@
         public System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Label label4;
     }
 }
 
