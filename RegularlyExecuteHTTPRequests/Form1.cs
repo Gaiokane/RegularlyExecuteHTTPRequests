@@ -1,30 +1,17 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Web.Script.Serialization;
 using System.Text.RegularExpressions;
 using Quartz.Impl;
 using Quartz;
-using Quartz.Logging;
-using Quartz.Impl.Matchers;
-using Quartz.Impl.Calendar;
-using System.Threading;
 
 namespace RegularlyExecuteHTTPRequests
 {
@@ -225,8 +212,20 @@ namespace RegularlyExecuteHTTPRequests
             textBox2.Text = ConfigSettings.default_url;
             richTextBox1.Text = ConfigSettings.default_json;
             textBox_cron.Text = ConfigSettings.default_cron;
+            string configIsAuthorization = ConfigSettings.isAuthorization;
+            if (configIsAuthorization == "true")
+            {
+                chkbox_Authorization.Checked = true;
+            }
+            else
+            {
+                chkbox_Authorization.Checked = false;
+            }
+            textbox_uid.Text = ConfigSettings.login_uid;
+            textbox_pid.Text = ConfigSettings.login_pid;
+            textBox_loginurl.Text = ConfigSettings.login_url;
 
-            if (ConfigSettings.control_enable=="true")
+            if (ConfigSettings.control_enable == "true")
             {
                 textBox1.Enabled = true;
                 btn_DELETE.Enabled = true;
@@ -346,13 +345,13 @@ namespace RegularlyExecuteHTTPRequests
                 }
                 #endregion
 
-                JavaScriptSerializer s = new JavaScriptSerializer();
+                JavaScriptSerializer js = new JavaScriptSerializer();
 
                 richTextBox2.Text = "";
 
                 for (int i = 0; i < times; i++)
                 {
-                    Dictionary<string, object> JsonData = (Dictionary<string, object>)s.DeserializeObject(ConvertJsonString(sqlQuerys[i]));
+                    Dictionary<string, object> JsonData = (Dictionary<string, object>)js.DeserializeObject(ConvertJsonString(sqlQuerys[i]));
                     //Dictionary<string, string> JsonData = (Dictionary<string, string>)JsonConvert.DeserializeObject(ConvertJsonString(richTextBox1.Text));
                     //Dictionary<string, string> JsonData = richTextBox1.Text.Trim().Split(',').ToDictionary(s => s.Split(':')[0].Replace("\"", ""), s => s.Split(':')[1].Replace("\"", ""));
                     //MessageBox.Show(HttpPut("http://192.168.30.73:9002/admin/task", obj));
@@ -524,16 +523,94 @@ namespace RegularlyExecuteHTTPRequests
 
         private void btn_POST_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("empty");
+            if (chkbox_Authorization.Checked == true && (string.IsNullOrEmpty(textbox_uid.Text) || string.IsNullOrEmpty(textbox_pid.Text) || string.IsNullOrEmpty(textBox_loginurl.Text)))
+            {
+                MessageBox.Show("uid、pid、login_url不能为空");
+            }
+            else if (chkbox_Authorization.Checked == true && string.IsNullOrEmpty(textbox_uid.Text) == false && string.IsNullOrEmpty(textbox_pid.Text) == false)
+            {
+                //MessageBox.Show("empty");
 
-            /*WebClient wc = new WebClient();
-            string strUrlPara = "{\"t0\":\"1627660800000000000\",\"t1\":\"1627660800000000000\",\"name\":\"point_audit_1\"}";
-            strUrlPara = HttpUtility.UrlEncode(strUrlPara);
-            byte[] data = new ASCIIEncoding().GetBytes(strUrlPara);
-            byte[] responseArray = wc.UploadData("http://192.168.30.73:9002/admin/task", data);
-            var response = Encoding.UTF8.GetString(responseArray);
-            //return response;
-            MessageBox.Show(response);*/
+                /*WebClient wc = new WebClient();
+                string strUrlPara = "{\"t0\":\"1627660800000000000\",\"t1\":\"1627660800000000000\",\"name\":\"point_audit_1\"}";
+                strUrlPara = HttpUtility.UrlEncode(strUrlPara);
+                byte[] data = new ASCIIEncoding().GetBytes(strUrlPara);
+                byte[] responseArray = wc.UploadData("http://192.168.30.73:9002/admin/task", data);
+                var response = Encoding.UTF8.GetString(responseArray);
+                //return response;
+                MessageBox.Show(response);*/
+
+                //string json = "{\"token\":\"eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluIiwiaXNzIjoiZnJhbWUiLCJ1aWkiOjEsInVpZCI6ImVkN2NhMGM4OTg4YTQ1ZDViNmEzMWE3ZjRhM2E1ZjY2IiwidW4iOiLotoXnuqfnrqHnkIblkZgiLCJjcGkiOiIyNDdmNWE4MTkxZWU0YjU3YmM4YWU1M2QzMWNmZjU0NSIsInVkaSI6ImVkN2ExZDQ5Zjc3MDQzNTRhODgyNTY1ZWQwYjA2NmY1IiwianRpIjoic3VwZXJhZG1pbi0xNjI4NjkwODkwIiwiZXhwIjoxNjI4NjkwODkwfQ.YCpcFyfOR2-5g6KD2JTTfJujGJkT5QI-7TiiO56urGCWXY6n3PCdvPpcrtlnrBR6n7qU5fuSk1z3IlcYn6HmqiSkOz5vx-MDEvFhbDKeUaCn7LebST3uL0wPfVHUBM-o51D88C7U6EmUQJ7T518iZQMlUEdGM4ElDh7kv-DF_d8\"}";
+                //string jsontoken = GetJsonValue(json, "token")[0].ToString();
+                //MessageBox.Show(jsontoken);
+
+                try
+                {
+                    JavaScriptSerializer tokenjs = new JavaScriptSerializer();
+                    string loginjson = "{\"uid\":\"" + textbox_uid.Text.Trim() + "\",\"pid\":\"" + textbox_pid.Text.Trim() + "\"}";
+                    Dictionary<string, object> tokenJsonData = (Dictionary<string, object>)tokenjs.DeserializeObject(ConvertJsonString(loginjson));
+                    string tokenresult = HTTPHelper.HttpPost(textBox_loginurl.Text.Trim(), tokenJsonData);
+                    string token = GetJsonValue(tokenresult, "token")[0].ToString();
+
+
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    Dictionary<string, object> JsonData = (Dictionary<string, object>)js.DeserializeObject(ConvertJsonString(richTextBox1.Text.Trim()));
+                    /*foreach (var item in JsonData)
+                    {
+                        MessageBox.Show(item.ToString());
+                    }*/
+                    string result = HTTPHelper.HttpPostAuthorization(textBox2.Text.Trim(), JsonData, token);
+                    MessageBox.Show(result);
+
+
+
+
+                    //Clipboard.SetText(result);
+                    //string token = GetJsonValue(result, "token")[0].ToString();
+                    //MessageBox.Show(token);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else if (chkbox_Authorization.Checked == false)
+            {
+                try
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    Dictionary<string, object> JsonData = (Dictionary<string, object>)js.DeserializeObject(ConvertJsonString(richTextBox1.Text.Trim()));
+                    string result = HTTPHelper.HttpPost(textBox2.Text.Trim(), JsonData);
+                    MessageBox.Show(result);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("ERROR");
+            }
+        }
+
+        /// <summary>
+        /// 获取JSON字符串中指定KEY的值
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public List<String> GetJsonValue(String jsonString, String key)
+        {
+            String pattern = $"\"{key}\":\"(.*?)\\\"";
+            MatchCollection matches = Regex.Matches(jsonString, pattern, RegexOptions.IgnoreCase);
+            List<string> lst = new List<string>();
+            foreach (Match m in matches)
+            {
+                lst.Add(m.Groups[1].Value);
+            }
+
+            return lst;
         }
 
         private void btn_GET_Click(object sender, EventArgs e)
@@ -712,6 +789,11 @@ namespace RegularlyExecuteHTTPRequests
             job.JobDataMap.Put(SendMessageJob.url, textBox2.Text.Trim());
             job.JobDataMap.Put(SendMessageJob.body, richTextBox1.Text.Trim());
 
+            job.JobDataMap.Put(SendMessageJob.isauthorization, chkbox_Authorization.Checked.ToString());
+            job.JobDataMap.Put(SendMessageJob.uid, textbox_uid.Text.Trim());
+            job.JobDataMap.Put(SendMessageJob.pid, textbox_pid.Text.Trim());
+            job.JobDataMap.Put(SendMessageJob.loginurl, textBox_loginurl.Text.Trim());
+
             //4.将job和trigger加入到作业调度池中
             scheduler.ScheduleJob(job, _CronTrigger);
             //5.开启调度
@@ -759,6 +841,10 @@ namespace RegularlyExecuteHTTPRequests
         public const string url = "url";
         public const string body = "body";
         public const string backresult = "backresult";
+        public const string isauthorization = "false";
+        public const string uid = "username";
+        public const string pid = "password";
+        public const string loginurl = "loginurl";
 
         /// <summary>
         /// 创建要执行的作业
@@ -770,6 +856,10 @@ namespace RegularlyExecuteHTTPRequests
             JobDataMap data = context.JobDetail.JobDataMap;
             string Url = data.GetString(url);
             string Body = data.GetString(body);
+            string IsAuthorization = data.GetString(isauthorization);
+            string Uid = data.GetString(uid);
+            string Pid = data.GetString(pid);
+            string LoginUrl = data.GetString(loginurl);
 
             await Task.Run(() =>
             {
@@ -826,6 +916,8 @@ namespace RegularlyExecuteHTTPRequests
                     }
                     else
                     {
+                        /*
+                        //请求加token前
                         DateTime execStart = DateTime.Now;
                         JavaScriptSerializer s = new JavaScriptSerializer();
                         Dictionary<string, object> JsonData = (Dictionary<string, object>)s.DeserializeObject(f1.ConvertJsonString(sqlQuerys[0]));
@@ -845,7 +937,88 @@ namespace RegularlyExecuteHTTPRequests
                             "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
                             "执行结果：\r\n" + result
                             );
+                        */
+
+
+                        //请求加token后
+                        if (IsAuthorization == "True" && (string.IsNullOrEmpty(Uid) || string.IsNullOrEmpty(Pid) || string.IsNullOrEmpty(LoginUrl)))
+                        {
+                            MessageBox.Show("uid、pid、login_url不能为空");
+                        }
+                        else if (IsAuthorization == "True" && string.IsNullOrEmpty(Uid) == false && string.IsNullOrEmpty(Pid) == false)
+                        {
+                            try
+                            {
+                                JavaScriptSerializer tokenjs = new JavaScriptSerializer();
+                                string loginjson = "{\"uid\":\"" + Uid + "\",\"pid\":\"" + Pid + "\"}";
+                                Dictionary<string, object> tokenJsonData = (Dictionary<string, object>)tokenjs.DeserializeObject(f1.ConvertJsonString(loginjson));
+                                string tokenresult = HTTPHelper.HttpPost(LoginUrl, tokenJsonData);
+                                string token = f1.GetJsonValue(tokenresult, "token")[0].ToString();
+
+
+
+                                DateTime execStart = DateTime.Now;
+                                JavaScriptSerializer s = new JavaScriptSerializer();
+                                Dictionary<string, object> JsonData = (Dictionary<string, object>)s.DeserializeObject(f1.ConvertJsonString(sqlQuerys[0]));
+
+                                //MessageBox.Show(Url + "\n" + Body + "\n" + noMatch + "\n" + sqlQuerys[0] + "\n" + JsonData.Values);
+
+                                //string result = HTTPHelper.HttpPost(Url, JsonData);
+                                string result = HTTPHelper.HttpPostAuthorization(Url, JsonData, token);
+                                //Thread.Sleep(60000);
+                                DateTime execEnd = DateTime.Now;
+                                TimeSpan ts = execEnd - execStart;
+
+                                PublicVariables.execTimesCronAddOne();
+                                MessageBox.Show(
+                                    "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
+                                    "开始执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
+                                    "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
+                                    "执行结果：\r\n" + result
+                                    );
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                        }
+                        else if (IsAuthorization == "False")
+                        {
+                            try
+                            {
+                                DateTime execStart = DateTime.Now;
+                                JavaScriptSerializer s = new JavaScriptSerializer();
+                                Dictionary<string, object> JsonData = (Dictionary<string, object>)s.DeserializeObject(f1.ConvertJsonString(sqlQuerys[0]));
+
+                                //MessageBox.Show(Url + "\n" + Body + "\n" + noMatch + "\n" + sqlQuerys[0] + "\n" + JsonData.Values);
+
+                                //string result = HTTPHelper.HttpPost(Url, JsonData);
+                                string result = HTTPHelper.HttpPost(Url, JsonData);
+                                //Thread.Sleep(60000);
+                                DateTime execEnd = DateTime.Now;
+                                TimeSpan ts = execEnd - execStart;
+
+                                PublicVariables.execTimesCronAddOne();
+                                MessageBox.Show(
+                                    "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
+                                    "开始执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
+                                    "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
+                                    "执行结果：\r\n" + result
+                                    );
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("ERROR");
+                        }
                     }
+
+
+
                 }
             });
         }

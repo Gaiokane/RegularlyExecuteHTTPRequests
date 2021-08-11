@@ -9,7 +9,7 @@ namespace RegularlyExecuteHTTPRequests
 {
     class ConfigSettings
     {
-        public static string default_url, default_json, default_cron, control_enable;
+        public static string default_url, default_json, default_cron, control_enable, isAuthorization, login_url, login_uid, login_pid;
         public static string ConfigPath = "./RegularlyExecuteHTTPRequests.exe";
 
         #region 获取配置文件中配置
@@ -22,6 +22,10 @@ namespace RegularlyExecuteHTTPRequests
             default_json = RWConfig.GetappSettingsValue("default_json", ConfigPath);
             default_cron = RWConfig.GetappSettingsValue("default_cron", ConfigPath);
             control_enable = RWConfig.GetappSettingsValue("control_enable", ConfigPath);
+            isAuthorization = RWConfig.GetappSettingsValue("isAuthorization", ConfigPath);
+            login_url = RWConfig.GetappSettingsValue("login_url", ConfigPath);
+            login_uid = RWConfig.GetappSettingsValue("login_uid", ConfigPath);
+            login_pid = RWConfig.GetappSettingsValue("login_pid", ConfigPath);
         }
         #endregion
 
@@ -46,6 +50,22 @@ namespace RegularlyExecuteHTTPRequests
             if (string.IsNullOrEmpty(control_enable))
             {
                 RWConfig.SetappSettingsValue("control_enable", "false", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(isAuthorization))
+            {
+                RWConfig.SetappSettingsValue("isAuthorization", "true", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(login_url))
+            {
+                RWConfig.SetappSettingsValue("login_url", "http://192.168.30.73:9092/api/proxy/auth/login", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(login_uid))
+            {
+                RWConfig.SetappSettingsValue("login_uid", "用户名转的uid", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(login_pid))
+            {
+                RWConfig.SetappSettingsValue("login_pid", "密码转的pid", ConfigPath);
             }
         }
         #endregion

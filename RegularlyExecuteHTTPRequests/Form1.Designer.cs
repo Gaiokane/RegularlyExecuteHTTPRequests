@@ -45,6 +45,13 @@
             this.label3 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textbox_uid = new System.Windows.Forms.TextBox();
+            this.textbox_pid = new System.Windows.Forms.TextBox();
+            this.chkbox_Authorization = new System.Windows.Forms.CheckBox();
+            this.textBox_loginurl = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btn_DELETE
@@ -201,11 +208,76 @@
             this.label4.Text = "{{onthehour}}：取当前整点小时\r\n\r\n{{onthehour(+|-)小时数}}：\r\n取当前整点小时+或-指定小时数\r\n\r\n以上时间格式均为yyyy-" +
     "MM-dd HH:mm:ss\r\n\r\n可点击测试正则查看生成的时间";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(588, 365);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(35, 12);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "uid：";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(588, 392);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(35, 12);
+            this.label6.TabIndex = 18;
+            this.label6.Text = "pid：";
+            // 
+            // textbox_uid
+            // 
+            this.textbox_uid.Location = new System.Drawing.Point(629, 362);
+            this.textbox_uid.Name = "textbox_uid";
+            this.textbox_uid.Size = new System.Drawing.Size(159, 21);
+            this.textbox_uid.TabIndex = 19;
+            // 
+            // textbox_pid
+            // 
+            this.textbox_pid.Location = new System.Drawing.Point(629, 389);
+            this.textbox_pid.Name = "textbox_pid";
+            this.textbox_pid.Size = new System.Drawing.Size(159, 21);
+            this.textbox_pid.TabIndex = 20;
+            // 
+            // chkbox_Authorization
+            // 
+            this.chkbox_Authorization.AutoSize = true;
+            this.chkbox_Authorization.Location = new System.Drawing.Point(669, 124);
+            this.chkbox_Authorization.Name = "chkbox_Authorization";
+            this.chkbox_Authorization.Size = new System.Drawing.Size(102, 16);
+            this.chkbox_Authorization.TabIndex = 21;
+            this.chkbox_Authorization.Text = "Authorization";
+            this.chkbox_Authorization.UseVisualStyleBackColor = true;
+            // 
+            // textBox_loginurl
+            // 
+            this.textBox_loginurl.Location = new System.Drawing.Point(663, 416);
+            this.textBox_loginurl.Name = "textBox_loginurl";
+            this.textBox_loginurl.Size = new System.Drawing.Size(125, 21);
+            this.textBox_loginurl.TabIndex = 22;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(586, 419);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(71, 12);
+            this.label7.TabIndex = 23;
+            this.label7.Text = "login_url：";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.textBox_loginurl);
+            this.Controls.Add(this.chkbox_Authorization);
+            this.Controls.Add(this.textbox_pid);
+            this.Controls.Add(this.textbox_uid);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label3);
@@ -251,6 +323,13 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textbox_uid;
+        private System.Windows.Forms.TextBox textbox_pid;
+        private System.Windows.Forms.CheckBox chkbox_Authorization;
+        private System.Windows.Forms.TextBox textBox_loginurl;
+        private System.Windows.Forms.Label label7;
     }
 }
 
