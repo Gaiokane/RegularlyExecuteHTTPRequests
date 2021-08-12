@@ -224,6 +224,7 @@ namespace RegularlyExecuteHTTPRequests
             textbox_uid.Text = ConfigSettings.login_uid;
             textbox_pid.Text = ConfigSettings.login_pid;
             textBox_loginurl.Text = ConfigSettings.login_url;
+            this.Text = ConfigSettings.form_text;
 
             if (ConfigSettings.control_enable == "true")
             {
@@ -939,6 +940,7 @@ namespace RegularlyExecuteHTTPRequests
                             );
                         */
 
+                        string execresult = "";
 
                         //请求加token后
                         if (IsAuthorization == "True" && (string.IsNullOrEmpty(Uid) || string.IsNullOrEmpty(Pid) || string.IsNullOrEmpty(LoginUrl)))
@@ -970,12 +972,12 @@ namespace RegularlyExecuteHTTPRequests
                                 TimeSpan ts = execEnd - execStart;
 
                                 PublicVariables.execTimesCronAddOne();
-                                MessageBox.Show(
-                                    "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
-                                    "开始执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
+                                execresult = "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
+                                    "本次执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
                                     "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
-                                    "执行结果：\r\n" + result
-                                    );
+                                    "请求参数：" + sqlQuerys[0] + "\r\n\r\n" +
+                                    "执行结果：\r\n" + result;
+                                MessageBox.Show(execresult);
                             }
                             catch (Exception ex)
                             {
@@ -999,12 +1001,12 @@ namespace RegularlyExecuteHTTPRequests
                                 TimeSpan ts = execEnd - execStart;
 
                                 PublicVariables.execTimesCronAddOne();
-                                MessageBox.Show(
-                                    "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
-                                    "开始执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
+                                execresult = "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
+                                    "本次执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
                                     "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
-                                    "执行结果：\r\n" + result
-                                    );
+                                    "请求参数：" + sqlQuerys[0] + "\r\n\r\n" +
+                                    "执行结果：\r\n" + result;
+                                MessageBox.Show(execresult);
                             }
                             catch (Exception ex)
                             {

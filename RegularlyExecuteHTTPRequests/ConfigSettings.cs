@@ -9,7 +9,7 @@ namespace RegularlyExecuteHTTPRequests
 {
     class ConfigSettings
     {
-        public static string default_url, default_json, default_cron, control_enable, isAuthorization, login_url, login_uid, login_pid;
+        public static string default_url, default_json, default_cron, control_enable, isAuthorization, login_url, login_uid, login_pid, form_text;
         public static string ConfigPath = "./RegularlyExecuteHTTPRequests.exe";
 
         #region 获取配置文件中配置
@@ -26,6 +26,7 @@ namespace RegularlyExecuteHTTPRequests
             login_url = RWConfig.GetappSettingsValue("login_url", ConfigPath);
             login_uid = RWConfig.GetappSettingsValue("login_uid", ConfigPath);
             login_pid = RWConfig.GetappSettingsValue("login_pid", ConfigPath);
+            form_text = RWConfig.GetappSettingsValue("form_text", ConfigPath);
         }
         #endregion
 
@@ -66,6 +67,10 @@ namespace RegularlyExecuteHTTPRequests
             if (string.IsNullOrEmpty(login_pid))
             {
                 RWConfig.SetappSettingsValue("login_pid", "密码转的pid", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(form_text))
+            {
+                RWConfig.SetappSettingsValue("form_text", "未配置窗体名称，可在配置文件中自定义", ConfigPath);
             }
         }
         #endregion
