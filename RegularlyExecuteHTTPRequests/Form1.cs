@@ -581,6 +581,12 @@ namespace RegularlyExecuteHTTPRequests
                 {
                     JavaScriptSerializer js = new JavaScriptSerializer();
                     Dictionary<string, object> JsonData = (Dictionary<string, object>)js.DeserializeObject(ConvertJsonString(richTextBox1.Text.Trim()));
+
+                    //foreach (var item in JsonData)
+                    //{
+                    //    MessageBox.Show("Key：" + item.Key + "\r\nValue：" + item.Value.ToString() + "\r\nValueFormat：" + item.Value.GetType());
+                    //}
+
                     string result = HTTPHelper.HttpPost(textBox2.Text.Trim(), JsonData);
                     MessageBox.Show(result);
                 }

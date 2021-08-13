@@ -55,7 +55,14 @@ namespace RegularlyExecuteHTTPRequests
             {
                 foreach (var item in param)
                 {
-                    json.Add(item.Key, item.Value.ToString());
+                    if (item.Value.GetType() == typeof(Int32))
+                    {
+                        json.Add(item.Key, Convert.ToInt32(item.Value.ToString()));
+                    }
+                    else
+                    {
+                        json.Add(item.Key, item.Value.ToString());
+                    }
                 }
             }
             string jsonstring = json.ToString();//获得参数的json字符串
@@ -96,7 +103,14 @@ namespace RegularlyExecuteHTTPRequests
             {
                 foreach (var item in param)
                 {
-                    json.Add(item.Key, item.Value.ToString());
+                    if (item.Value.GetType() == typeof(Int32))
+                    {
+                        json.Add(item.Key, Convert.ToInt32(item.Value.ToString()));
+                    }
+                    else
+                    {
+                        json.Add(item.Key, item.Value.ToString());
+                    }
                 }
             }
             string jsonstring = json.ToString();//获得参数的json字符串
@@ -137,7 +151,14 @@ namespace RegularlyExecuteHTTPRequests
             {
                 foreach (var item in param)
                 {
-                    json.Add(item.Key, item.Value.ToString());
+                    if (item.Value.GetType() == typeof(Int32))
+                    {
+                        json.Add(item.Key, Convert.ToInt32(item.Value.ToString()));
+                    }
+                    else
+                    {
+                        json.Add(item.Key, item.Value.ToString());
+                    }
                 }
             }
             string jsonstring = json.ToString();//获得参数的json字符串
