@@ -12,6 +12,8 @@ using System.Web.Script.Serialization;
 using System.Text.RegularExpressions;
 using Quartz.Impl;
 using Quartz;
+using Quartz.Impl.Matchers;
+using System.Threading;
 
 namespace RegularlyExecuteHTTPRequests
 {
@@ -37,6 +39,8 @@ namespace RegularlyExecuteHTTPRequests
 
         public Regex rgGetOnTheHourCustomAll = new Regex("{{onthehour(\\+|\\-)\\d*}}");//{{onthehour(+|-)7}}取整块 小时
         public Regex rgGetOnTheHourCustomDiff = new Regex("(\\+|\\-)\\d*");//{{onthehour+-7}}取(+|-)数字
+
+        public static Form1 form1 = null;
 
         //{{onthehour}}
         //{{onthehour+7}}
@@ -164,6 +168,7 @@ namespace RegularlyExecuteHTTPRequests
         public Form1()
         {
             InitializeComponent();
+            form1 = this;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -184,6 +189,8 @@ namespace RegularlyExecuteHTTPRequests
 
             textBox_cron.Text = "0/2 * * * * ?";
             textBox_cron.Text = "0 17 0 * * ?";
+
+            button3.Enabled = false;
 
             //MessageBox.Show(DateTimeToTstamp(Convert.ToDateTime("2021-07-19 20:09:28")).ToString());
             //MessageBox.Show(TstampToDateTime("1626696568").ToString("yyyy-MM-dd HH:mm:ss"));
@@ -774,11 +781,15 @@ namespace RegularlyExecuteHTTPRequests
             return result;
         }
 
+        //创建调度单元
+        static Task<IScheduler> tsk = StdSchedulerFactory.GetDefaultScheduler();
+        IScheduler scheduler = tsk.Result;
+
         private async void button2_Click(object sender, EventArgs e)
         {
             //创建调度单元
-            Task<IScheduler> tsk = StdSchedulerFactory.GetDefaultScheduler();
-            IScheduler scheduler = tsk.Result;
+            //Task<IScheduler> tsk = StdSchedulerFactory.GetDefaultScheduler();
+            //IScheduler scheduler = tsk.Result;
             //2.创建一个具体的作业即job (具体的job需要单独在一个文件中执行)
             IJobDetail job = JobBuilder.Create<SendMessageJob>().WithIdentity("完成").Build();
             //3.创建并配置一个触发器即trigger   1s执行一次
@@ -801,28 +812,72 @@ namespace RegularlyExecuteHTTPRequests
             job.JobDataMap.Put(SendMessageJob.pid, textbox_pid.Text.Trim());
             job.JobDataMap.Put(SendMessageJob.loginurl, textBox_loginurl.Text.Trim());
 
+            //监听器
+            //scheduler.ListenerManager.GetJobListeners();
+            //scheduler.ListenerManager.RemoveJobListener("CustomJobListener");
+            scheduler.ListenerManager.AddJobListener(new CustomJobListener(), GroupMatcher<JobKey>.AnyGroup());
+
             //4.将job和trigger加入到作业调度池中
-            scheduler.ScheduleJob(job, _CronTrigger);
+            await scheduler.ScheduleJob(job, _CronTrigger);
             //5.开启调度
-            scheduler.Start();
+            await scheduler.Start();
             //Console.ReadLine();
-            richTextBox2.Text += "\r\n定时开启";
+            //richTextBox2.Text += "\r\n定时开启";
+            richTextBox2.Text = richTextBox2.Text.Insert(0, "==============================定时开启==============================\r\n\r\n");
+
+            button2.Enabled = false;
+            button3.Enabled = true;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private async void button3_Click(object sender, EventArgs e)
         {
-            Task<IScheduler> tsk = StdSchedulerFactory.GetDefaultScheduler();
-            IScheduler scheduler = tsk.Result;
-            scheduler.Shutdown();
+            //Task<IScheduler> tsk = StdSchedulerFactory.GetDefaultScheduler();
+            //IScheduler scheduler = tsk.Result;
+            await scheduler.Shutdown();
 
             PublicVariables.execTimesCronReset();
 
-            richTextBox2.Text += "\r\n定时结束";
+            //richTextBox2.Text += "\r\n定时结束";
+            richTextBox2.Text = richTextBox2.Text.Insert(0, "==============================定时结束==============================\r\n\r\n");
+
+            /*
+             ##############################定时结束##############################
+             ------------------------------定时结束------------------------------
+             ******************************定时结束******************************
+             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!定时结束!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+             ==============================定时结束==============================
+             ———————————————定时结束———————————————
+             */
+
+            button2.Enabled = true;
+            button3.Enabled = false;
+
+            //创建调度单元
+            tsk = StdSchedulerFactory.GetDefaultScheduler();
+            scheduler = tsk.Result;
         }
 
-        public void printlog()
+        public void printlog(string newText)
         {
-            richTextBox2.Text += "\r\n执行a";
+            //richTextBox2.Text += "\r\n" + newText;
+
+            if (richTextBox2.InvokeRequired)
+            {
+                while (richTextBox2.IsHandleCreated == false)
+                {
+                    if (richTextBox2.Disposing || richTextBox2.IsDisposed) return;
+                }
+
+                CustomJobListener.MyDelegate myDelegate = new CustomJobListener.MyDelegate(printlog);
+                richTextBox2.Invoke(myDelegate, new object[] { newText });
+            }
+            else
+            {
+                //richTextBox2.Text = "";
+                //richTextBox2.Text += "\r\n" + newText;
+                //richTextBox2.Text += richTextBox2.Text.Insert(0, newText);
+                richTextBox2.Text = richTextBox2.Text.Insert(0, newText);
+            }
         }
         public virtual void JobWasExecuted(IJobExecutionContext inContext, JobExecutionException inException)
         {
@@ -843,6 +898,46 @@ namespace RegularlyExecuteHTTPRequests
             }
         }
     }
+    public class CustomJobListener : IJobListener
+    {
+        public delegate void MyDelegate(string Item1);
+        MyDelegate myDelegate = new MyDelegate(Form1.form1.printlog);
+
+        public static string ExecResult = "";
+
+        public string Name => "CustomJobListener";
+
+        public async Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Task.Run(() =>
+            {
+                //Console.WriteLine($"CustomJobListener JobExecutionVetoed {context.JobDetail.Description}");
+                //MessageBox.Show($"CustomJobListener JobExecutionVetoed {context.JobDetail.Description}");
+            });
+        }
+
+        public async Task JobToBeExecuted(IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Task.Run(() =>
+            {
+                //Console.WriteLine($"CustomJobListener JobToBeExecuted {context.JobDetail.Description}");
+                //MessageBox.Show($"CustomJobListener JobToBeExecuted {context.JobDetail.Description}");
+            });
+        }
+
+        public async Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Task.Run(() =>
+            {
+                //Console.WriteLine($"CustomJobListener JobWasExecuted {context.JobDetail.Description}");
+                //MessageBox.Show($"CustomJobListener JobWasExecuted {context.JobDetail.Description}");
+                //myDelegate("测试委托");
+                //MessageBox.Show(ExecResult);
+                myDelegate(ExecResult);
+            });
+        }
+    }
+
     public class SendMessageJob : IJob
     {
         public const string url = "url";
@@ -852,6 +947,9 @@ namespace RegularlyExecuteHTTPRequests
         public const string uid = "username";
         public const string pid = "password";
         public const string loginurl = "loginurl";
+
+        public delegate void MyDelegate(string Item1);
+        MyDelegate myDelegate = new MyDelegate(Form1.form1.printlog);
 
         /// <summary>
         /// 创建要执行的作业
@@ -867,6 +965,7 @@ namespace RegularlyExecuteHTTPRequests
             string Uid = data.GetString(uid);
             string Pid = data.GetString(pid);
             string LoginUrl = data.GetString(loginurl);
+
 
             await Task.Run(() =>
             {
@@ -978,12 +1077,15 @@ namespace RegularlyExecuteHTTPRequests
                                 TimeSpan ts = execEnd - execStart;
 
                                 PublicVariables.execTimesCronAddOne();
-                                execresult = "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
+                                execresult = "####################第 " + PublicVariables.exectimescron + " 次执行####################\r\n\r\n" +
                                     "本次执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
                                     "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
                                     "请求参数：" + sqlQuerys[0] + "\r\n\r\n" +
-                                    "执行结果：\r\n" + result;
-                                MessageBox.Show(execresult);
+                                    //"执行结果：\r\n" + result;
+                                    "执行结果：\r\n" + result.Substring(0, 3) + "\r\n\r\n";
+                                //MessageBox.Show(execresult);
+                                //myDelegate(execresult);
+                                CustomJobListener.ExecResult = execresult;
                             }
                             catch (Exception ex)
                             {
@@ -1007,12 +1109,15 @@ namespace RegularlyExecuteHTTPRequests
                                 TimeSpan ts = execEnd - execStart;
 
                                 PublicVariables.execTimesCronAddOne();
-                                execresult = "第 " + PublicVariables.exectimescron + " 次执行\r\n\r\n" +
+                                execresult = "####################第 " + PublicVariables.exectimescron + " 次执行####################\r\n\r\n" +
                                     "本次执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
                                     "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
                                     "请求参数：" + sqlQuerys[0] + "\r\n\r\n" +
-                                    "执行结果：\r\n" + result;
+                                    //"执行结果：\r\n" + result;
+                                    "执行结果：\r\n" + result.Substring(0, 3) + "\r\n\r\n";
                                 MessageBox.Show(execresult);
+                                //myDelegate(execresult);
+                                CustomJobListener.ExecResult = execresult;
                             }
                             catch (Exception ex)
                             {
