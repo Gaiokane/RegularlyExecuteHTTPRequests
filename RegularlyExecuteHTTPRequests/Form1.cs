@@ -951,6 +951,21 @@ namespace RegularlyExecuteHTTPRequests
         public delegate void MyDelegate(string Item1);
         MyDelegate myDelegate = new MyDelegate(Form1.form1.printlog);
 
+        private string resultSubString(string str)
+        {
+            string result = "";
+            if (string.IsNullOrEmpty(ConfigSettings.result_substring))
+            {
+                result = str;
+            }
+            else
+            {
+                result = str.Substring(0, Convert.ToInt32(ConfigSettings.result_substring));
+            }
+            return result;
+        }
+
+
         /// <summary>
         /// 创建要执行的作业
         /// </summary>
@@ -1081,8 +1096,9 @@ namespace RegularlyExecuteHTTPRequests
                                     "本次执行时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
                                     "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
                                     "请求参数：" + sqlQuerys[0] + "\r\n\r\n" +
-                                    //"执行结果：\r\n" + result;
-                                    "执行结果：\r\n" + result.Substring(0, 3) + "\r\n\r\n";
+                                //"执行结果：\r\n" + result;
+                                //"执行结果：\r\n" + result.Substring(0, 3) + "\r\n\r\n";
+                                "执行结果：\r\n" + resultSubString(result) + "\r\n\r\n";
                                 //MessageBox.Show(execresult);
                                 //myDelegate(execresult);
                                 CustomJobListener.ExecResult = execresult;
@@ -1114,8 +1130,9 @@ namespace RegularlyExecuteHTTPRequests
                                     "执行耗时：" + Form1.MillisecondsToRightTimes(ts.TotalMilliseconds) + "\r\n\r\n" +
                                     "请求参数：" + sqlQuerys[0] + "\r\n\r\n" +
                                     //"执行结果：\r\n" + result;
-                                    "执行结果：\r\n" + result.Substring(0, 3) + "\r\n\r\n";
-                                MessageBox.Show(execresult);
+                                    //"执行结果：\r\n" + result.Substring(0, 3) + "\r\n\r\n";
+                                    "执行结果：\r\n" + resultSubString(result) + "\r\n\r\n";
+                                //MessageBox.Show(execresult);
                                 //myDelegate(execresult);
                                 CustomJobListener.ExecResult = execresult;
                             }
