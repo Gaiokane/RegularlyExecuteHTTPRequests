@@ -14,6 +14,7 @@ using Quartz.Impl;
 using Quartz;
 using Quartz.Impl.Matchers;
 using System.Threading;
+using System.Drawing;
 
 namespace RegularlyExecuteHTTPRequests
 {
@@ -212,6 +213,14 @@ namespace RegularlyExecuteHTTPRequests
             ConfigSettings.getConfigSettings();
             DefaultConfigSettingsFill();
 
+            //label8.Text = "数据同步中，请勿关闭！";
+            label8.Visible = false;
+            //label放在panel中，配合以下两参数超长自动换行
+            label8.Dock = DockStyle.Fill;
+            label8.AutoSize = false;
+            label8.Font = new Font("宋体", 14, FontStyle.Bold);
+            label8.ForeColor = Color.Red;
+
         }
 
         private void DefaultConfigSettingsFill()
@@ -249,6 +258,8 @@ namespace RegularlyExecuteHTTPRequests
                 btn_POST.Enabled = false;
                 btn_GET.Enabled = false;
             }
+
+            label8.Text = ConfigSettings.close_warning;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -827,6 +838,9 @@ namespace RegularlyExecuteHTTPRequests
 
             button2.Enabled = false;
             button3.Enabled = true;
+
+            //关闭红字提示
+            label8.Visible = true;
         }
 
         private async void button3_Click(object sender, EventArgs e)
@@ -855,6 +869,9 @@ namespace RegularlyExecuteHTTPRequests
             //创建调度单元
             tsk = StdSchedulerFactory.GetDefaultScheduler();
             scheduler = tsk.Result;
+
+            //关闭红字提示
+            label8.Visible = false;
         }
 
         public void printlog(string newText)
@@ -897,7 +914,56 @@ namespace RegularlyExecuteHTTPRequests
                 Console.Error.WriteLine(e.StackTrace);
             }
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (label8.Visible == true)
+            {
+                if (DialogResult.OK == MessageBox.Show("正在执行定时服务，确认关闭？", "警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
+                {
+                    CreateNewFile(Environment.CurrentDirectory + "\\ClosingLog.txt", "正在执行定时服务，程序关闭时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n");
+                    //解决会弹窗两次的问题
+                    this.Dispose();
+                    Application.Exit();
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+            else
+            {
+                CreateNewFile(Environment.CurrentDirectory + "\\ClosingLog.txt", "定时服务未开启，程序关闭时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n");
+                //解决会记录两次的问题
+                this.Dispose();
+                Application.Exit();
+            }
+        }
+
+        /// <summary>
+        /// 新建文件并写入内容，如果已存在，则覆盖
+        /// </summary>
+        /// <param name="fileName">文件路径</param>
+        /// <param name="content">文件内容</param>
+        public static bool CreateNewFile(string fileName, string content)
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(fileName, FileMode.Append, FileAccess.Write))
+                {
+                    StreamWriter sw = new StreamWriter(fs);
+                    sw.Write(content);
+                    sw.Close();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
+
     public class CustomJobListener : IJobListener
     {
         public delegate void MyDelegate(string Item1);
