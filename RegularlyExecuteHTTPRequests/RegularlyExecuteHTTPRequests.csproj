@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\ac0nh-hcz4m-001.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Gaiokane">
       <HintPath>..\..\..\dll\Gaiokane 2.0 含删除\Gaiokane.dll</HintPath>
