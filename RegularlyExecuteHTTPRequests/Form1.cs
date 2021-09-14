@@ -218,9 +218,20 @@ namespace RegularlyExecuteHTTPRequests
             //label放在panel中，配合以下两参数超长自动换行
             label8.Dock = DockStyle.Fill;
             label8.AutoSize = false;
-            label8.Font = new Font("宋体", 14, FontStyle.Bold);
+            label8.Font = new Font("宋体", Convert.ToInt32(ConfigSettings.close_warning_fontsize), FontStyle.Bold);
             label8.ForeColor = Color.Red;
 
+            //panel2、label9.Text = "数据同步中，请勿关闭！";
+            panel2.Visible = false;
+            //label9.Text = "数据同步中，请勿关闭！";
+            //label9.Visible = false;
+            //label放在panel中，配合以下两参数超长自动换行
+            label9.Dock = DockStyle.Fill;
+            label9.AutoSize = false;
+            label9.Font = new Font("宋体", Convert.ToInt32(ConfigSettings.mid_close_warning_fontsize), FontStyle.Bold);
+            label9.ForeColor = Color.Red;
+
+            this.Icon = Properties.Resources.ac0nh_hcz4m_001;
         }
 
         private void DefaultConfigSettingsFill()
@@ -260,6 +271,7 @@ namespace RegularlyExecuteHTTPRequests
             }
 
             label8.Text = ConfigSettings.close_warning;
+            label9.Text = ConfigSettings.mid_close_warning;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -841,6 +853,11 @@ namespace RegularlyExecuteHTTPRequests
 
             //关闭红字提示
             label8.Visible = true;
+            //mid关闭红字提示
+            if (ConfigSettings.is_show_mid_close_warning == "1")
+            {
+                panel2.Visible = true;
+            }
         }
 
         private async void button3_Click(object sender, EventArgs e)
@@ -872,6 +889,8 @@ namespace RegularlyExecuteHTTPRequests
 
             //关闭红字提示
             label8.Visible = false;
+            //关闭红字提示
+            panel2.Visible = false;
         }
 
         public void printlog(string newText)

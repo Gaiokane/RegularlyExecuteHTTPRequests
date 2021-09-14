@@ -9,7 +9,10 @@ namespace RegularlyExecuteHTTPRequests
 {
     class ConfigSettings
     {
-        public static string default_url, default_json, default_cron, control_enable, isAuthorization, login_url, login_uid, login_pid, form_text, result_substring, close_warning;
+        public static string default_url, default_json, default_cron,
+            control_enable, isAuthorization, login_url, login_uid, login_pid,
+            form_text, result_substring,
+            close_warning, close_warning_fontsize, is_show_mid_close_warning, mid_close_warning, mid_close_warning_fontsize;
         public static string ConfigPath = "./RegularlyExecuteHTTPRequests.exe";
 
         #region 获取配置文件中配置
@@ -29,6 +32,10 @@ namespace RegularlyExecuteHTTPRequests
             form_text = RWConfig.GetappSettingsValue("form_text", ConfigPath);
             result_substring = RWConfig.GetappSettingsValue("result_substring", ConfigPath);
             close_warning = RWConfig.GetappSettingsValue("close_warning", ConfigPath);
+            close_warning_fontsize = RWConfig.GetappSettingsValue("close_warning_fontsize", ConfigPath);
+            is_show_mid_close_warning = RWConfig.GetappSettingsValue("is_show_mid_close_warning", ConfigPath);
+            mid_close_warning = RWConfig.GetappSettingsValue("mid_close_warning", ConfigPath);
+            mid_close_warning_fontsize = RWConfig.GetappSettingsValue("mid_close_warning_fontsize", ConfigPath);
         }
         #endregion
 
@@ -81,6 +88,22 @@ namespace RegularlyExecuteHTTPRequests
             if (string.IsNullOrEmpty(close_warning))
             {
                 RWConfig.SetappSettingsValue("close_warning", "数据同步中，请勿关闭！", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(close_warning_fontsize))
+            {
+                RWConfig.SetappSettingsValue("close_warning_fontsize", "14", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(is_show_mid_close_warning))
+            {
+                RWConfig.SetappSettingsValue("is_show_mid_close_warning", "1", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(mid_close_warning))
+            {
+                RWConfig.SetappSettingsValue("mid_close_warning", "数据同步中，请勿关闭！", ConfigPath);
+            }
+            if (string.IsNullOrEmpty(mid_close_warning_fontsize))
+            {
+                RWConfig.SetappSettingsValue("mid_close_warning_fontsize", "30", ConfigPath);
             }
         }
         #endregion

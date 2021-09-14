@@ -59,5 +59,15 @@ namespace RegularlyExecuteHTTPRequests.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找类似于 (图标) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon ac0nh_hcz4m_001 {
+            get {
+                object obj = ResourceManager.GetObject("ac0nh_hcz4m_001", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }
