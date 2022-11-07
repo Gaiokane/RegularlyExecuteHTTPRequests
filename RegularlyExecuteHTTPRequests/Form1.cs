@@ -551,14 +551,24 @@ namespace RegularlyExecuteHTTPRequests
                         if (i + 1 < times && chkbox_WaitingTime.Checked == true)
                         {
                             int waitingTime = Convert.ToInt32(txtbox_WaitingTime.Text.Trim());
-                            richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，等待 " + waitingTime.ToString() + " 秒后继续执行\r\n");
-                            Thread.Sleep(waitingTime * 1000);
+                            richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，下次执行在" + DateTime.Now.AddSeconds(waitingTime).ToString("yyyy-MM-dd HH:mm:ss") + "\r\n");
+                            Delay(waitingTime * 1000);
                         }
                     }
                     MessageBox.Show("执行结束");
                 }
             }
 
+        }
+        //休眠指定时间，解决Thread.Sleep导致界面卡死问题
+        public static void Delay(int mm)
+        {
+            DateTime current = DateTime.Now;
+            while (current.AddMilliseconds(mm) > DateTime.Now)
+            {
+                Application.DoEvents();
+            }
+            return;
         }
 
         public string ConvertJsonString(string str)
@@ -792,8 +802,8 @@ namespace RegularlyExecuteHTTPRequests
                                 if (index + 1 < querys.Length && chkbox_WaitingTime.Checked == true)
                                 {
                                     int waitingTime = Convert.ToInt32(txtbox_WaitingTime.Text.Trim());
-                                    richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，等待 " + waitingTime.ToString() + " 秒后继续执行\r\n");
-                                    Thread.Sleep(waitingTime * 1000);
+                                    richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，下次执行在" + DateTime.Now.AddSeconds(waitingTime).ToString("yyyy-MM-dd HH:mm:ss") + "\r\n");
+                                    Delay(waitingTime * 1000);
                                 }
                                 index++;
                             }
@@ -823,8 +833,8 @@ namespace RegularlyExecuteHTTPRequests
                                 if (index + 1 < querys.Length && chkbox_WaitingTime.Checked == true)
                                 {
                                     int waitingTime = Convert.ToInt32(txtbox_WaitingTime.Text.Trim());
-                                    richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，等待 " + waitingTime.ToString() + " 秒后继续执行\r\n");
-                                    Thread.Sleep(waitingTime * 1000);
+                                    richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，下次执行在" + DateTime.Now.AddSeconds(waitingTime).ToString("yyyy-MM-dd HH:mm:ss") + "\r\n");
+                                    Delay(waitingTime * 1000);
                                 }
                                 index++;
                             }
@@ -891,8 +901,8 @@ namespace RegularlyExecuteHTTPRequests
                                 if (index + 1 < querys.Length && chkbox_WaitingTime.Checked == true)
                                 {
                                     int waitingTime = Convert.ToInt32(txtbox_WaitingTime.Text.Trim());
-                                    richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，等待 " + waitingTime.ToString() + " 秒后继续执行\r\n");
-                                    Thread.Sleep(waitingTime * 1000);
+                                    richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，下次执行在" + DateTime.Now.AddSeconds(waitingTime).ToString("yyyy-MM-dd HH:mm:ss") + "\r\n");
+                                    Delay(waitingTime * 1000);
                                 }
                                 index++;
                             }
@@ -922,8 +932,8 @@ namespace RegularlyExecuteHTTPRequests
                                 if (index + 1 < querys.Length && chkbox_WaitingTime.Checked == true)
                                 {
                                     int waitingTime = Convert.ToInt32(txtbox_WaitingTime.Text.Trim());
-                                    richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，等待 " + waitingTime.ToString() + " 秒后继续执行\r\n");
-                                    Thread.Sleep(waitingTime * 1000);
+                                    richTextBox2.Text = richTextBox2.Text.Insert(0, "已配置等待时间，下次执行在" + DateTime.Now.AddSeconds(waitingTime).ToString("yyyy-MM-dd HH:mm:ss") + "\r\n");
+                                    Delay(waitingTime * 1000);
                                 }
                                 index++;
                             }
@@ -1214,6 +1224,7 @@ namespace RegularlyExecuteHTTPRequests
             await scheduler.Start();
             //Console.ReadLine();
             //richTextBox2.Text += "\r\n定时开启";
+            richTextBox2.Text = "";
             richTextBox2.Text = richTextBox2.Text.Insert(0, "==============================定时开启==============================\r\n\r\n");
 
             button2.Enabled = false;

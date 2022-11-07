@@ -326,9 +326,9 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.label8);
-            this.panel1.Location = new System.Drawing.Point(669, 6);
+            this.panel1.Location = new System.Drawing.Point(669, 33);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(132, 108);
+            this.panel1.Size = new System.Drawing.Size(132, 81);
             this.panel1.TabIndex = 25;
             // 
             // panel2
@@ -424,7 +424,6 @@
         private System.Windows.Forms.TextBox textBox_loginurl;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox chkbox_Tstamp;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.CheckBox chkbox_JSONArray;
         private System.Windows.Forms.CheckBox chkbox_WaitingTime;
         private System.Windows.Forms.TextBox txtbox_WaitingTime;
