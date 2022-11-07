@@ -56,6 +56,12 @@
             this.chkbox_JSONArray = new System.Windows.Forms.CheckBox();
             this.chkbox_WaitingTime = new System.Windows.Forms.CheckBox();
             this.txtbox_WaitingTime = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_DELETE
@@ -308,6 +314,40 @@
             this.txtbox_WaitingTime.Size = new System.Drawing.Size(68, 21);
             this.txtbox_WaitingTime.TabIndex = 27;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(4, 3);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(41, 12);
+            this.label8.TabIndex = 24;
+            this.label8.Text = "label8";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label8);
+            this.panel1.Location = new System.Drawing.Point(669, 6);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(132, 108);
+            this.panel1.TabIndex = 25;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.label9);
+            this.panel2.Location = new System.Drawing.Point(27, 149);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(541, 81);
+            this.panel2.TabIndex = 26;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(4, 3);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(41, 12);
+            this.label9.TabIndex = 24;
+            this.label9.Text = "label9";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -317,6 +357,8 @@
             this.Controls.Add(this.chkbox_WaitingTime);
             this.Controls.Add(this.chkbox_JSONArray);
             this.Controls.Add(this.chkbox_Tstamp);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox_loginurl);
             this.Controls.Add(this.chkbox_Authorization);
@@ -344,7 +386,12 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -362,6 +409,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
         public System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.TextBox textBox_cron;
         public System.Windows.Forms.TextBox textBox2;
@@ -380,6 +428,10 @@
         private System.Windows.Forms.CheckBox chkbox_JSONArray;
         private System.Windows.Forms.CheckBox chkbox_WaitingTime;
         private System.Windows.Forms.TextBox txtbox_WaitingTime;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label9;
     }
 }
 
