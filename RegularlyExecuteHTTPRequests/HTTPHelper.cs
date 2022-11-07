@@ -133,6 +133,59 @@ namespace RegularlyExecuteHTTPRequests
             return content;
         }
 
+        public static string HttpPostArray(string url, Dictionary<String, object> param)
+        {
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest; //创建请求
+            CookieContainer cookieContainer = new CookieContainer();
+            request.CookieContainer = cookieContainer;
+            request.AllowAutoRedirect = true;
+            //request.AllowReadStreamBuffering = true;
+            request.MaximumResponseHeadersLength = 1024;
+            request.Method = "POST"; //请求方式为post
+            request.AllowAutoRedirect = true;
+            request.MaximumResponseHeadersLength = 1024;
+            request.ContentType = "application/json";
+            //request.Headers.Add("Authorization", "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluIiwiaXNzIjoiZnJhbWUiLCJ1aWkiOjEsInVpZCI6ImVkN2NhMGM4OTg4YTQ1ZDViNmEzMWE3ZjRhM2E1ZjY2IiwidW4iOiLotoXnuqfnrqHnkIblkZgiLCJjcGkiOiIyNDdmNWE4MTkxZWU0YjU3YmM4YWU1M2QzMWNmZjU0NSIsInVkaSI6ImVkN2ExZDQ5Zjc3MDQzNTRhODgyNTY1ZWQwYjA2NmY1IiwianRpIjoic3VwZXJhZG1pbi0xNjI4NjkwODkwIiwiZXhwIjoxNjI4NjkwODkwfQ.YCpcFyfOR2-5g6KD2JTTfJujGJkT5QI-7TiiO56urGCWXY6n3PCdvPpcrtlnrBR6n7qU5fuSk1z3IlcYn6HmqiSkOz5vx-MDEvFhbDKeUaCn7LebST3uL0wPfVHUBM-o51D88C7U6EmUQJ7T518iZQMlUEdGM4ElDh7kv-DF_d8");
+            JObject json = new JObject();
+            if (param.Count != 0) //将参数添加到json对象中
+            {
+                foreach (var item in param)
+                {
+                    if (item.Value.GetType() == typeof(Int32))
+                    {
+                        json.Add(item.Key, Convert.ToInt32(item.Value.ToString()));
+                    }
+                    else
+                    {
+                        json.Add(item.Key, item.Value.ToString());
+                    }
+                }
+            }
+            JArray arr = new JArray();
+            arr.Add(json);
+
+
+            string jsonstring = json.ToString();//获得参数的json字符串
+            jsonstring = arr.ToString();//获得参数的json字符串
+            byte[] jsonbyte = Encoding.UTF8.GetBytes(jsonstring);
+            Stream postStream = request.GetRequestStream();
+            postStream.Write(jsonbyte, 0, jsonbyte.Length);
+            postStream.Close();
+            //发送请求并获取相应回应数据       
+            HttpWebResponse res;
+            try
+            {
+                res = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                res = (HttpWebResponse)ex.Response;
+            }
+            StreamReader sr = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
+            string content = sr.ReadToEnd(); //获得响应字符串
+            return content;
+        }
+
         public static string HttpPostAuthorization(string url, Dictionary<String, object> param, string Authorization)
         {
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest; //创建请求
@@ -162,6 +215,58 @@ namespace RegularlyExecuteHTTPRequests
                 }
             }
             string jsonstring = json.ToString();//获得参数的json字符串
+            byte[] jsonbyte = Encoding.UTF8.GetBytes(jsonstring);
+            Stream postStream = request.GetRequestStream();
+            postStream.Write(jsonbyte, 0, jsonbyte.Length);
+            postStream.Close();
+            //发送请求并获取相应回应数据       
+            HttpWebResponse res;
+            try
+            {
+                res = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                res = (HttpWebResponse)ex.Response;
+            }
+            StreamReader sr = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
+            string content = sr.ReadToEnd(); //获得响应字符串
+            return content;
+        }
+
+        public static string HttpPostAuthorizationArray(string url, Dictionary<String, object> param, string Authorization)
+        {
+            HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest; //创建请求
+            CookieContainer cookieContainer = new CookieContainer();
+            request.CookieContainer = cookieContainer;
+            request.AllowAutoRedirect = true;
+            //request.AllowReadStreamBuffering = true;
+            request.MaximumResponseHeadersLength = 1024;
+            request.Method = "POST"; //请求方式为post
+            request.AllowAutoRedirect = true;
+            request.MaximumResponseHeadersLength = 1024;
+            request.ContentType = "application/json";
+            request.Headers.Add("Authorization", Authorization);
+            JObject json = new JObject();
+            if (param.Count != 0) //将参数添加到json对象中
+            {
+                foreach (var item in param)
+                {
+                    if (item.Value.GetType() == typeof(Int32))
+                    {
+                        json.Add(item.Key, Convert.ToInt32(item.Value.ToString()));
+                    }
+                    else
+                    {
+                        json.Add(item.Key, item.Value.ToString());
+                    }
+                }
+            }
+            JArray arr = new JArray();
+            arr.Add(json);
+
+            string jsonstring = json.ToString();//获得参数的json字符串
+            jsonstring = arr.ToString();//获得参数的json字符串
             byte[] jsonbyte = Encoding.UTF8.GetBytes(jsonstring);
             Stream postStream = request.GetRequestStream();
             postStream.Write(jsonbyte, 0, jsonbyte.Length);

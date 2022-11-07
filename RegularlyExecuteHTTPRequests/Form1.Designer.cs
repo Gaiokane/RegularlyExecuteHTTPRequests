@@ -52,6 +52,10 @@
             this.chkbox_Authorization = new System.Windows.Forms.CheckBox();
             this.textBox_loginurl = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.chkbox_Tstamp = new System.Windows.Forms.CheckBox();
+            this.chkbox_JSONArray = new System.Windows.Forms.CheckBox();
+            this.chkbox_WaitingTime = new System.Windows.Forms.CheckBox();
+            this.txtbox_WaitingTime = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btn_DELETE
@@ -148,7 +152,7 @@
             // 
             this.richTextBox2.Location = new System.Drawing.Point(14, 239);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(568, 199);
+            this.richTextBox2.Size = new System.Drawing.Size(568, 231);
             this.richTextBox2.TabIndex = 10;
             this.richTextBox2.Text = "";
             // 
@@ -176,7 +180,7 @@
             // 
             this.textBox_cron.Location = new System.Drawing.Point(669, 239);
             this.textBox_cron.Name = "textBox_cron";
-            this.textBox_cron.Size = new System.Drawing.Size(100, 21);
+            this.textBox_cron.Size = new System.Drawing.Size(176, 21);
             this.textBox_cron.TabIndex = 13;
             // 
             // label3
@@ -203,15 +207,15 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(586, 263);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(215, 96);
+            this.label4.Size = new System.Drawing.Size(263, 120);
             this.label4.TabIndex = 16;
-            this.label4.Text = "{{onthehour}}：取当前整点小时\r\n\r\n{{onthehour(+|-)小时数}}：\r\n取当前整点小时+或-指定小时数\r\n\r\n以上时间格式均为yyyy-" +
-    "MM-dd HH:mm:ss\r\n\r\n可点击测试正则查看生成的时间";
+            this.label4.Text = "{{time(d|h|m|s)(+|-)7:2020-03-29 20:00:00}}\r\n\r\n{{onthehour}}：取当前整点小时\r\n\r\n{{ontheho" +
+    "ur(+|-)小时数}}：\r\n取当前整点小时+或-指定小时数\r\n\r\n以上时间格式均为yyyy-MM-dd HH:mm:ss\r\n\r\n可点击测试正则查看生成的时间";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(588, 365);
+            this.label5.Location = new System.Drawing.Point(589, 398);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(35, 12);
             this.label5.TabIndex = 17;
@@ -220,7 +224,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(588, 392);
+            this.label6.Location = new System.Drawing.Point(589, 425);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 12);
             this.label6.TabIndex = 18;
@@ -228,16 +232,16 @@
             // 
             // textbox_uid
             // 
-            this.textbox_uid.Location = new System.Drawing.Point(629, 362);
+            this.textbox_uid.Location = new System.Drawing.Point(630, 395);
             this.textbox_uid.Name = "textbox_uid";
-            this.textbox_uid.Size = new System.Drawing.Size(159, 21);
+            this.textbox_uid.Size = new System.Drawing.Size(215, 21);
             this.textbox_uid.TabIndex = 19;
             // 
             // textbox_pid
             // 
-            this.textbox_pid.Location = new System.Drawing.Point(629, 389);
+            this.textbox_pid.Location = new System.Drawing.Point(630, 422);
             this.textbox_pid.Name = "textbox_pid";
-            this.textbox_pid.Size = new System.Drawing.Size(159, 21);
+            this.textbox_pid.Size = new System.Drawing.Size(215, 21);
             this.textbox_pid.TabIndex = 20;
             // 
             // chkbox_Authorization
@@ -252,25 +256,67 @@
             // 
             // textBox_loginurl
             // 
-            this.textBox_loginurl.Location = new System.Drawing.Point(663, 416);
+            this.textBox_loginurl.Location = new System.Drawing.Point(664, 449);
             this.textBox_loginurl.Name = "textBox_loginurl";
-            this.textBox_loginurl.Size = new System.Drawing.Size(125, 21);
+            this.textBox_loginurl.Size = new System.Drawing.Size(181, 21);
             this.textBox_loginurl.TabIndex = 22;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(586, 419);
+            this.label7.Location = new System.Drawing.Point(587, 452);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(71, 12);
             this.label7.TabIndex = 23;
             this.label7.Text = "login_url：";
             // 
+            // chkbox_Tstamp
+            // 
+            this.chkbox_Tstamp.AutoSize = true;
+            this.chkbox_Tstamp.Location = new System.Drawing.Point(669, 146);
+            this.chkbox_Tstamp.Name = "chkbox_Tstamp";
+            this.chkbox_Tstamp.Size = new System.Drawing.Size(132, 28);
+            this.chkbox_Tstamp.TabIndex = 24;
+            this.chkbox_Tstamp.Text = "DateTimeToTstamp\r\n（仅{{time}}生效）";
+            this.chkbox_Tstamp.UseVisualStyleBackColor = true;
+            // 
+            // chkbox_JSONArray
+            // 
+            this.chkbox_JSONArray.AutoSize = true;
+            this.chkbox_JSONArray.Location = new System.Drawing.Point(756, 182);
+            this.chkbox_JSONArray.Name = "chkbox_JSONArray";
+            this.chkbox_JSONArray.Size = new System.Drawing.Size(96, 16);
+            this.chkbox_JSONArray.TabIndex = 25;
+            this.chkbox_JSONArray.Text = "请求体[]包裹";
+            this.chkbox_JSONArray.UseVisualStyleBackColor = true;
+            // 
+            // chkbox_WaitingTime
+            // 
+            this.chkbox_WaitingTime.AutoSize = true;
+            this.chkbox_WaitingTime.Location = new System.Drawing.Point(669, 11);
+            this.chkbox_WaitingTime.Name = "chkbox_WaitingTime";
+            this.chkbox_WaitingTime.Size = new System.Drawing.Size(120, 16);
+            this.chkbox_WaitingTime.TabIndex = 26;
+            this.chkbox_WaitingTime.Text = "等待时间（秒）：";
+            this.chkbox_WaitingTime.UseVisualStyleBackColor = true;
+            this.chkbox_WaitingTime.CheckedChanged += new System.EventHandler(this.chkbox_WaitingTime_CheckedChanged);
+            // 
+            // txtbox_WaitingTime
+            // 
+            this.txtbox_WaitingTime.Location = new System.Drawing.Point(784, 6);
+            this.txtbox_WaitingTime.Name = "txtbox_WaitingTime";
+            this.txtbox_WaitingTime.Size = new System.Drawing.Size(68, 21);
+            this.txtbox_WaitingTime.TabIndex = 27;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(857, 482);
+            this.Controls.Add(this.txtbox_WaitingTime);
+            this.Controls.Add(this.chkbox_WaitingTime);
+            this.Controls.Add(this.chkbox_JSONArray);
+            this.Controls.Add(this.chkbox_Tstamp);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox_loginurl);
             this.Controls.Add(this.chkbox_Authorization);
@@ -316,7 +362,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
         public System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.TextBox textBox_cron;
         public System.Windows.Forms.TextBox textBox2;
@@ -330,6 +375,11 @@
         private System.Windows.Forms.CheckBox chkbox_Authorization;
         private System.Windows.Forms.TextBox textBox_loginurl;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox chkbox_Tstamp;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.CheckBox chkbox_JSONArray;
+        private System.Windows.Forms.CheckBox chkbox_WaitingTime;
+        private System.Windows.Forms.TextBox txtbox_WaitingTime;
     }
 }
 
