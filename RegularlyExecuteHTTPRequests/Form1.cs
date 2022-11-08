@@ -1038,7 +1038,7 @@ namespace RegularlyExecuteHTTPRequests
                             //用这条，仅替换第一个匹配对象
                             if (chkbox_Tstamp.Checked == true)
                             {
-                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddDays(length * i).ToString("yyyy-MM-dd HH:mm:ss"))).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddDays(length * i).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
                             }
                             else
                             {
@@ -1052,7 +1052,7 @@ namespace RegularlyExecuteHTTPRequests
                             //用这条，仅替换第一个匹配对象
                             if (chkbox_Tstamp.Checked == true)
                             {
-                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddDays(-(length * i)).ToString("yyyy-MM-dd HH:mm:ss"))).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddDays(-(length * i)).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
                             }
                             else
                             {
@@ -1069,7 +1069,7 @@ namespace RegularlyExecuteHTTPRequests
                             //用这条，仅替换第一个匹配对象
                             if (chkbox_Tstamp.Checked == true)
                             {
-                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddHours(length * i).ToString("yyyy-MM-dd HH:mm:ss"))).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddHours(length * i).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
                             }
                             else
                             {
@@ -1083,7 +1083,7 @@ namespace RegularlyExecuteHTTPRequests
                             //用这条，仅替换第一个匹配对象
                             if (chkbox_Tstamp.Checked == true)
                             {
-                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddHours(-(length * i)).ToString("yyyy-MM-dd HH:mm:ss"))).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddHours(-(length * i)).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
                             }
                             else
                             {
@@ -1100,7 +1100,7 @@ namespace RegularlyExecuteHTTPRequests
                             //用这条，仅替换第一个匹配对象
                             if (chkbox_Tstamp.Checked == true)
                             {
-                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddMinutes(length * i).ToString("yyyy-MM-dd HH:mm:ss"))).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddMinutes(length * i).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
                             }
                             else
                             {
@@ -1114,7 +1114,7 @@ namespace RegularlyExecuteHTTPRequests
                             //用这条，仅替换第一个匹配对象
                             if (chkbox_Tstamp.Checked == true)
                             {
-                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddMinutes(-(length * i)).ToString("yyyy-MM-dd HH:mm:ss"))).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddMinutes(-(length * i)).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
                             }
                             else
                             {
@@ -1131,7 +1131,7 @@ namespace RegularlyExecuteHTTPRequests
                             //用这条，仅替换第一个匹配对象
                             if (chkbox_Tstamp.Checked == true)
                             {
-                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddSeconds(length * i).ToString("yyyy-MM-dd HH:mm:ss"))).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddSeconds(length * i).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
                             }
                             else
                             {
@@ -1145,7 +1145,7 @@ namespace RegularlyExecuteHTTPRequests
                             //用这条，仅替换第一个匹配对象
                             if (chkbox_Tstamp.Checked == true)
                             {
-                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddSeconds(-(length * i)).ToString("yyyy-MM-dd HH:mm:ss"))).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                                sourceSQL[i] = rgGetDateTimeAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddSeconds(-(length * i)).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
                             }
                             else
                             {
