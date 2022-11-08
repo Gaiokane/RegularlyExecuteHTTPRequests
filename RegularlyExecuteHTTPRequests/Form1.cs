@@ -142,6 +142,11 @@ namespace RegularlyExecuteHTTPRequests
                     //MessageBox.Show(dt.ToString("yyyy-MM-dd HH:mm:ss"));
 
                     sourceSQL[i] = rgGetOnTheHourAll.Replace(sourceSQL[i], dt.ToString("yyyy-MM-dd HH:mm:ss"), 1);
+
+                    if (chkbox_Tstamp.Checked == true)
+                    {
+                        sourceSQL[i] = sourceSQL[i].Replace(dt.ToString("yyyy-MM-dd HH:mm:ss"), DateTimeToTstamp(Convert.ToDateTime(dt.ToString("yyyy-MM-dd HH:mm:ss"))).ToString());
+                    }
                 }
             }
 
@@ -183,14 +188,30 @@ namespace RegularlyExecuteHTTPRequests
                         //用这条，替换的时候 如果有相同匹配对象，会全部替换成同一个值
                         //sourceSQL[i] = sourceSQL[i].Replace(matchOnTheHourCustomAll.Groups[0].Value, dt.AddHours(length).ToString("yyyy-MM-dd HH:mm:ss"));//小时+
                         //用这条，仅替换第一个匹配对象
-                        sourceSQL[i] = rgGetOnTheHourCustomAll.Replace(sourceSQL[i], dt.AddHours(length).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+
+                        if (chkbox_Tstamp.Checked == true)
+                        {
+                            sourceSQL[i] = rgGetOnTheHourCustomAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddHours(length).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
+                        }
+                        else
+                        {
+                            sourceSQL[i] = rgGetOnTheHourCustomAll.Replace(sourceSQL[i], dt.AddHours(length).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                        }
                     }
                     if (symbol == "-")//-
                     {
                         //用这条，替换的时候 如果有相同匹配对象，会全部替换成同一个值
                         //sourceSQL[i] = sourceSQL[i].Replace(matchOnTheHourCustomAll.Groups[0].Value, dt.AddHours(-length).ToString("yyyy-MM-dd HH:mm:ss"));//小时-
                         //用这条，仅替换第一个匹配对象
-                        sourceSQL[i] = rgGetOnTheHourCustomAll.Replace(sourceSQL[i], dt.AddHours(-length).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+
+                        if (chkbox_Tstamp.Checked == true)
+                        {
+                            sourceSQL[i] = rgGetOnTheHourCustomAll.Replace(sourceSQL[i], DateTimeToTstamp(Convert.ToDateTime(dt.AddHours(-length).ToString("yyyy-MM-dd HH:mm:ss"))).ToString(), 1);
+                        }
+                        else
+                        {
+                            sourceSQL[i] = rgGetOnTheHourCustomAll.Replace(sourceSQL[i], dt.AddHours(-length).ToString("yyyy-MM-dd HH:mm:ss"), 1);
+                        }
                     }
                 }
             }
