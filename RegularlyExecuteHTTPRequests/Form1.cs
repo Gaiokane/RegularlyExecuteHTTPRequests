@@ -32,6 +32,9 @@ namespace RegularlyExecuteHTTPRequests
         string[] sqlQuerys;
         static string noMatch = "";
 
+        public Regex rgGetID = new Regex("{{id:\\d\\d*}}");//{{id:7}}取整块
+        public Regex rgGetNum = new Regex("(?<={{id:)\\d*?(?=}})");//{{id:7}}取冒号后的数字
+
         public Regex rgGetDateTimeAll = new Regex("{{time(d|h|m|s)(\\+|\\-)\\d*:\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31) (((0|1)[0-9])|(2[0-3])):((0|1|2|3|4|5)[0-9]):((0|1|2|3|4|5)[0-9])}}");//{{time(d|h|m|s)(+|-)7:2020-03-29 20:00:00}}取整块 日、小时、分钟、秒
         public Regex rgGetDateTimeDiff = new Regex("(d|h|m|s)(\\+|\\-)\\d*");//{{timed+-7:2020-03-29 20:00:00}}取(d|h|m|s)(+|-)数字
         public Regex rgGetDateTime = new Regex("\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31) (((0|1)[0-9])|(2[0-3])):((0|1|2|3|4|5)[0-9]):((0|1|2|3|4|5)[0-9])");//{{timed+-7:2020-03-29 20:00:00}}取时间
@@ -61,6 +64,18 @@ namespace RegularlyExecuteHTTPRequests
             {
                 sqlQuerys[i] = richTextBox1.Text.Trim();
             }
+
+            #region 判断是否有匹配{{id:x}}
+            //判断是否有匹配{{id:x}}
+            if (rgGetID.IsMatch(sqlQuerys[0]))
+            {
+                getResultID(sqlQuerys);
+            }
+            else
+            {
+                noMatch += "没有匹配项{{id:x}}\n";
+            }
+            #endregion
 
             #region 判断是否有匹配{{onthehour}}
             //判断是否有匹配{{onthehour}}
@@ -116,6 +131,33 @@ namespace RegularlyExecuteHTTPRequests
             noMatch += sqlQuerys[0] + "\n";
             richTextBox2.Text += noMatch + "\n";
         }
+
+        #region 将{{id:x}}替换为x
+        /// <summary>
+        /// 将{{id:x}}替换为x
+        /// </summary>
+        /// <param name="sourceSQL">原始SQL数组</param>
+        /// <returns>替换完的数组</returns>
+        public string[] getResultID(string[] sourceSQL)
+        {
+            Match matchrgGetID;
+            Match matchGetNum;
+            while (rgGetID.Match(sourceSQL[0]).Success == true)
+            {
+                for (int i = 0; i < sourceSQL.Length; i++)
+                {
+                    matchrgGetID = rgGetID.Match(sourceSQL[i]);//{{id:7}}取整块
+                    matchGetNum = rgGetNum.Match(sourceSQL[i]);//{{id:7}}取冒号后的数字
+                    //用这条，替换的时候 如果有相同匹配对象，会全部替换成同一个值
+                    //sourceSQL[i] = sourceSQL[i].Replace(matchrgGetID.Groups[0].Value, (Convert.ToInt32(matchGetNum.Groups[0].Value) + i).ToString());
+                    //用这条，仅替换第一个匹配对象
+                    sourceSQL[i] = rgGetID.Replace(sourceSQL[i], (Convert.ToInt32(matchGetNum.Groups[0].Value) + i).ToString(), 1);
+                }
+            }
+
+            return sourceSQL;
+        }
+        #endregion
 
         #region 将{{onthehour}}替换为当前整点时间
         /// <summary>
@@ -375,6 +417,18 @@ namespace RegularlyExecuteHTTPRequests
                 string symbol = "";
                 int length = 0;
 
+                #region 判断是否有匹配{{id:x}}
+                //判断是否有匹配{{id:x}}
+                if (rgGetID.IsMatch(sqlQuerys[0]))
+                {
+                    getResultID(sqlQuerys);
+                }
+                else
+                {
+                    noMatch += "没有匹配项{{id:x}}\n";
+                }
+                #endregion
+
                 #region 判断是否有匹配{{onthehour}}
                 //判断是否有匹配{{onthehour}}
                 if (rgGetOnTheHourAll.IsMatch(sqlQuerys[0]))
@@ -459,6 +513,18 @@ namespace RegularlyExecuteHTTPRequests
                 string type = "";
                 string symbol = "";
                 int length = 0;
+
+                #region 判断是否有匹配{{id:x}}
+                //判断是否有匹配{{id:x}}
+                if (rgGetID.IsMatch(sqlQuerys[0]))
+                {
+                    getResultID(sqlQuerys);
+                }
+                else
+                {
+                    noMatch += "没有匹配项{{id:x}}\n";
+                }
+                #endregion
 
                 #region 判断是否有匹配{{onthehour}}
                 //判断是否有匹配{{onthehour}}
@@ -1504,6 +1570,18 @@ namespace RegularlyExecuteHTTPRequests
                     string noMatch = "";
 
                     Form1 f1 = new Form1();
+
+                    #region 判断是否有匹配{{id:x}}
+                    //判断是否有匹配{{id:x}}
+                    if (f1.rgGetID.IsMatch(sqlQuerys[0]))
+                    {
+                        f1.getResultID(sqlQuerys);
+                    }
+                    else
+                    {
+                        noMatch += "没有匹配项{{id:x}}\n";
+                    }
+                    #endregion
 
                     #region 判断是否有匹配{{onthehour}}
                     //判断是否有匹配{{onthehour}}
