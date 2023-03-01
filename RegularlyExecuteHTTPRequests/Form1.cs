@@ -486,6 +486,21 @@ namespace RegularlyExecuteHTTPRequests
 
         private void btn_PUT_Click(object sender, EventArgs e)
         {
+            string token = "";
+            if (chkbox_Authorization.Checked == true && (string.IsNullOrEmpty(textbox_uid.Text) || string.IsNullOrEmpty(textbox_pid.Text) || string.IsNullOrEmpty(textBox_loginurl.Text)))
+            {
+                MessageBox.Show("uid、pid、login_url不能为空");
+            }
+            else if (chkbox_Authorization.Checked == true && string.IsNullOrEmpty(textbox_uid.Text) == false && string.IsNullOrEmpty(textbox_pid.Text) == false)
+            {
+                JavaScriptSerializer tokenjs = new JavaScriptSerializer();
+                string loginjson = "{\"uid\":\"" + textbox_uid.Text.Trim() + "\",\"pid\":\"" + textbox_pid.Text.Trim() + "\"}";
+                Dictionary<string, object> tokenJsonData = (Dictionary<string, object>)tokenjs.DeserializeObject(ConvertJsonString(loginjson));
+                string tokenresult = HTTPHelper.HttpPost(textBox_loginurl.Text.Trim(), tokenJsonData);
+                token = GetJsonValue(tokenresult, "token")[0].ToString();
+            }
+
+
             var obj = new Dictionary<string, object>()
             {
                 {"t0", "1627660800000000000"},
@@ -599,7 +614,7 @@ namespace RegularlyExecuteHTTPRequests
                             DateTime execStart = DateTime.Now;
 
                             //string result = HttpPut("http://192.168.30.73:9002/admin/task", JsonData);
-                            string result = HttpPut(textBox2.Text.Trim(), JsonData);
+                            string result = HttpPut(textBox2.Text.Trim(), JsonData, token);
 
                             DateTime execEnd = DateTime.Now;
                             TimeSpan ts = execEnd - execStart;
@@ -720,7 +735,7 @@ namespace RegularlyExecuteHTTPRequests
             return content;
         }
 
-        public static string HttpPut(string url, Dictionary<String, object> param)
+        public static string HttpPut(string url, Dictionary<String, object> param, string Authorization = "")
         {
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest; //创建请求
             CookieContainer cookieContainer = new CookieContainer();
@@ -732,6 +747,10 @@ namespace RegularlyExecuteHTTPRequests
             request.AllowAutoRedirect = true;
             request.MaximumResponseHeadersLength = 1024;
             request.ContentType = "application/json";
+            if (!string.IsNullOrEmpty(Authorization))
+            {
+                request.Headers.Add("Authorization", Authorization);
+            }
             JObject json = new JObject();
             if (param.Count != 0) //将参数添加到json对象中
             {
@@ -1402,7 +1421,7 @@ namespace RegularlyExecuteHTTPRequests
 
         private void chkbox_WaitingTime_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkbox_WaitingTime.Checked==true)
+            if (chkbox_WaitingTime.Checked == true)
             {
                 txtbox_WaitingTime.Text = "";
                 txtbox_WaitingTime.Enabled = true;
