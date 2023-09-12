@@ -204,9 +204,31 @@ namespace RegularlyExecuteHTTPRequests
             {
                 foreach (var item in param)
                 {
-                    if (item.Value.GetType() == typeof(Int32))
+                    Type itemType = item.Value.GetType();
+                    if (itemType == typeof(Int32))
                     {
                         json.Add(item.Key, Convert.ToInt32(item.Value.ToString()));
+                    }
+                    // 如果值为[{},{}]
+                    else if (itemType == typeof(Object[]))
+                    {
+                        if (item.Value is IEnumerable<object> enumerable) // 检查是否为可枚举类型
+                        {
+                            var jArray = new JArray();
+                            foreach (var obj in enumerable)
+                            {
+                                if (obj is IDictionary<string, object> dict) // 检查是否为字典类型
+                                {
+                                    var jObject = new JObject();
+                                    foreach (var kvp in dict)
+                                    {
+                                        jObject.Add(kvp.Key, JToken.FromObject(kvp.Value));
+                                    }
+                                    jArray.Add(jObject);
+                                }
+                            }
+                            json.Add(item.Key, jArray);
+                        }
                     }
                     else
                     {
