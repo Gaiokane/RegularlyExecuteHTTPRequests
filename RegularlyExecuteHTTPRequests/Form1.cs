@@ -35,6 +35,10 @@ namespace RegularlyExecuteHTTPRequests
         public Regex rgGetID = new Regex("{{id:\\d\\d*}}");//{{id:7}}取整块
         public Regex rgGetNum = new Regex("(?<={{id:)\\d*?(?=}})");//{{id:7}}取冒号后的数字
 
+        public Regex rgGetDateAll = new Regex("{{date(\\+|\\-)\\d*:\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31)}}");//{{date(+|-)7:2020-03-29}}取整块 日
+        public Regex rgGetDateDiff = new Regex("(\\+|\\-)\\d*");//{{date+-7:2020-03-29}}取(+|-)数字
+        public Regex rgGetDate = new Regex("([0-9]{4}-[0-9]{2}-[0-9]{2})");//{{date+-7:2020-03-29}}取时间
+
         public Regex rgGetDateTimeAll = new Regex("{{time(d|h|m|s)(\\+|\\-)\\d*:\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31) (((0|1)[0-9])|(2[0-3])):((0|1|2|3|4|5)[0-9]):((0|1|2|3|4|5)[0-9])}}");//{{time(d|h|m|s)(+|-)7:2020-03-29 20:00:00}}取整块 日、小时、分钟、秒
         public Regex rgGetDateTimeDiff = new Regex("(d|h|m|s)(\\+|\\-)\\d*");//{{timed+-7:2020-03-29 20:00:00}}取(d|h|m|s)(+|-)数字
         public Regex rgGetDateTime = new Regex("\\d{4}-(0?[1-9]|1[0-2])-((0?[1-9])|((1|2)[0-9])|30|31) (((0|1)[0-9])|(2[0-3])):((0|1|2|3|4|5)[0-9]):((0|1|2|3|4|5)[0-9])");//{{timed+-7:2020-03-29 20:00:00}}取时间
@@ -98,6 +102,32 @@ namespace RegularlyExecuteHTTPRequests
             else
             {
                 noMatch += "没有匹配项{{onthehour(+|-)7}}\n";
+            }
+            #endregion
+
+            #region 判断是否有匹配{{date(+|-)7:date}}
+            //判断是否有匹配{{date(+|-)7:date}}
+            if (rgGetDateAll.IsMatch(sqlQuerys[0]))
+            {
+                Match matchDateAll;
+                Match matchDateDiff;
+                Match matchDate;
+                matchDateAll = rgGetDateAll.Match(sqlQuerys[0]);//{{date(+|-)7:2020-03-29}}取整块 日
+                matchDateDiff = rgGetDateDiff.Match(matchDateAll.Groups[0].Value);//{{date+-7:2020-03-29}}取(+|-)数字
+                matchDate = rgGetDate.Match(matchDateAll.Groups[0].Value);//{{date+-7:2020-03-29}}取时间
+                dt = Convert.ToDateTime(matchDate.Groups[0].Value);
+                str = matchDateDiff.Groups[0].Value;//取(+|-)数字
+                symbol = str.Substring(0, 1);//(+|-)
+                length = Convert.ToInt32(str.Substring(1, str.Length - 1));//数字
+
+
+                //MessageBox.Show("true");
+                getNewDate(sqlQuerys);
+            }
+            else
+            {
+                //MessageBox.Show("没有匹配项{{date(+|-)7:date}}");
+                noMatch += "没有匹配项{{date(+|-)7:date}}\n";
             }
             #endregion
 
@@ -453,6 +483,32 @@ namespace RegularlyExecuteHTTPRequests
                 }
                 #endregion
 
+                #region 判断是否有匹配{{date(+|-)7:date}}
+                //判断是否有匹配{{date(+|-)7:date}}
+                if (rgGetDateAll.IsMatch(sqlQuerys[0]))
+                {
+                    Match matchDateAll;
+                    Match matchDateDiff;
+                    Match matchDate;
+                    matchDateAll = rgGetDateAll.Match(sqlQuerys[0]);//{{date(+|-)7:2020-03-29}}取整块 日
+                    matchDateDiff = rgGetDateDiff.Match(matchDateAll.Groups[0].Value);//{{date+-7:2020-03-29}}取(+|-)数字
+                    matchDate = rgGetDate.Match(matchDateAll.Groups[0].Value);//{{date+-7:2020-03-29}}取时间
+                    dt = Convert.ToDateTime(matchDate.Groups[0].Value);
+                    str = matchDateDiff.Groups[0].Value;//取(+|-)数字
+                    symbol = str.Substring(0, 1);//(+|-)
+                    length = Convert.ToInt32(str.Substring(1, str.Length - 1));//数字
+
+
+                    //MessageBox.Show("true");
+                    getNewDate(sqlQuerys);
+                }
+                else
+                {
+                    //MessageBox.Show("没有匹配项{{date(+|-)7:date}}");
+                    noMatch += "没有匹配项{{date(+|-)7:date}}\n";
+                }
+                #endregion
+
                 #region 判断是否有匹配{{time(d|h|m|s)(+|-)7:datetime}}
                 //判断是否有匹配{{time(d|h|m|s)(+|-)7:datetime}}
                 if (rgGetDateTimeAll.IsMatch(sqlQuerys[0]))
@@ -562,6 +618,32 @@ namespace RegularlyExecuteHTTPRequests
                 else
                 {
                     noMatch += "没有匹配项{{onthehour(+|-)7}}\n";
+                }
+                #endregion
+
+                #region 判断是否有匹配{{date(+|-)7:date}}
+                //判断是否有匹配{{date(+|-)7:date}}
+                if (rgGetDateAll.IsMatch(sqlQuerys[0]))
+                {
+                    Match matchDateAll;
+                    Match matchDateDiff;
+                    Match matchDate;
+                    matchDateAll = rgGetDateAll.Match(sqlQuerys[0]);//{{date(+|-)7:2020-03-29}}取整块 日
+                    matchDateDiff = rgGetDateDiff.Match(matchDateAll.Groups[0].Value);//{{date+-7:2020-03-29}}取(+|-)数字
+                    matchDate = rgGetDate.Match(matchDateAll.Groups[0].Value);//{{date+-7:2020-03-29}}取时间
+                    dt = Convert.ToDateTime(matchDate.Groups[0].Value);
+                    str = matchDateDiff.Groups[0].Value;//取(+|-)数字
+                    symbol = str.Substring(0, 1);//(+|-)
+                    length = Convert.ToInt32(str.Substring(1, str.Length - 1));//数字
+
+
+                    //MessageBox.Show("true");
+                    getNewDate(sqlQuerys);
+                }
+                else
+                {
+                    //MessageBox.Show("没有匹配项{{date(+|-)7:date}}");
+                    noMatch += "没有匹配项{{date(+|-)7:date}}\n";
                 }
                 #endregion
 
@@ -1102,7 +1184,49 @@ namespace RegularlyExecuteHTTPRequests
             //return (int)(time - startTime).TotalSeconds;
         }
 
-        #region 将time(d|h|m|s)(+|-)7:2020-03-29 20:00:00}}指定时间并递增
+        #region 将{{date(+|-)7:2020-03-29}}指定时间并递增
+        /// <summary>
+        /// 将{{date(+|-)7:2020-03-29}}指定时间并递增
+        /// </summary>
+        /// <param name="sourceSQL">原始SQL数组</param>
+        /// <returns>替换完的数组</returns>
+        public string[] getNewDate(string[] sourceSQL)
+        {
+            //{{date+777:2020-04-04}}
+
+            Match matchDateAll;
+            Match matchDateDiff;
+            Match matchDate;
+
+            while (rgGetDateAll.Match(sourceSQL[0]).Success == true)
+            {
+                for (int i = 0; i < sourceSQL.Length; i++)
+                {
+                    matchDateAll = rgGetDateAll.Match(sourceSQL[i]);//{{date(+|-)7:2020-03-29}}取整块 日
+                    matchDateDiff = rgGetDateDiff.Match(matchDateAll.Groups[0].Value);//{{date+-7:2020-03-29}}取(+|-)数字
+                    matchDate = rgGetDate.Match(matchDateAll.Groups[0].Value);//{{date+-7:2020-03-29}}取时间
+                    DateTime dt = Convert.ToDateTime(matchDate.Groups[0].Value);
+                    string str = matchDateDiff.Groups[0].Value;//取(+|-)数字
+                    string symbol = str.Substring(0, 1);//(+|-)
+                    int length = Convert.ToInt32(str.Substring(1, str.Length - 1));//数字
+
+                    //日+/-
+                    if (symbol == "+")//+
+                    {
+                        sourceSQL[i] = rgGetDateAll.Replace(sourceSQL[i], Convert.ToDateTime(dt.AddDays(length * i).ToString("yyyy-MM-dd")).ToString("yyyy-MM-dd"), 1);
+                    }
+                    if (symbol == "-")//-
+                    {
+                        sourceSQL[i] = rgGetDateAll.Replace(sourceSQL[i], Convert.ToDateTime(dt.AddDays(-(length * i)).ToString("yyyy-MM-dd")).ToString("yyyy-MM-dd"), 1);
+                    }
+                }
+            }
+
+            return sourceSQL;
+        }
+        #endregion
+
+        #region 将{{time(d|h|m|s)(+|-)7:2020-03-29 20:00:00}}指定时间并递增
         /// <summary>
         /// 将time(d|h|m|s)(+|-)7:2020-03-29 20:00:00}}指定时间并递增
         /// </summary>
