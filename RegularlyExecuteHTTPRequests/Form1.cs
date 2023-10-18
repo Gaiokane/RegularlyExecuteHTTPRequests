@@ -1434,14 +1434,14 @@ namespace RegularlyExecuteHTTPRequests
             //MessageBox.Show(richTextBox1.Text.Trim());
 
             // 设置初始参数
-            job.JobDataMap.Put(SendMessageJob.url, textBox2.Text.Trim());
-            job.JobDataMap.Put(SendMessageJob.body, richTextBox1.Text.Trim());
+            job.JobDataMap.Put("url", textBox2.Text.Trim());
+            job.JobDataMap.Put("body", richTextBox1.Text.Trim());
 
-            job.JobDataMap.Put(SendMessageJob.isauthorization, chkbox_Authorization.Checked.ToString());
-            job.JobDataMap.Put(SendMessageJob.isjsonarray, chkbox_JSONArray.Checked.ToString());
-            job.JobDataMap.Put(SendMessageJob.uid, textbox_uid.Text.Trim());
-            job.JobDataMap.Put(SendMessageJob.pid, textbox_pid.Text.Trim());
-            job.JobDataMap.Put(SendMessageJob.loginurl, textBox_loginurl.Text.Trim());
+            job.JobDataMap.Put("isauthorization", chkbox_Authorization.Checked.ToString());
+            job.JobDataMap.Put("isjsonarray", chkbox_JSONArray.Checked.ToString());
+            job.JobDataMap.Put("uid", textbox_uid.Text.Trim());
+            job.JobDataMap.Put("pid", textbox_pid.Text.Trim());
+            job.JobDataMap.Put("loginurl", textBox_loginurl.Text.Trim());
 
             //监听器
             //scheduler.ListenerManager.GetJobListeners();
@@ -1649,14 +1649,7 @@ namespace RegularlyExecuteHTTPRequests
 
     public class SendMessageJob : IJob
     {
-        public const string url = "url";
-        public const string body = "body";
         public const string backresult = "backresult";
-        public const string isauthorization = "false";
-        public const string isjsonarray = "false";
-        public const string uid = "username";
-        public const string pid = "password";
-        public const string loginurl = "loginurl";
 
         public delegate void MyDelegate(string Item1);
         MyDelegate myDelegate = new MyDelegate(Form1.form1.printlog);
@@ -1684,13 +1677,13 @@ namespace RegularlyExecuteHTTPRequests
         public async Task Execute(IJobExecutionContext context)
         {
             JobDataMap data = context.JobDetail.JobDataMap;
-            string Url = data.GetString(url);
-            string Body = data.GetString(body);
-            string IsAuthorization = data.GetString(isauthorization);
-            string IsJSONArray = data.GetString(isjsonarray);
-            string Uid = data.GetString(uid);
-            string Pid = data.GetString(pid);
-            string LoginUrl = data.GetString(loginurl);
+            string Url = data.GetString("url");
+            string Body = data.GetString("body");
+            string IsAuthorization = data.GetString("isauthorization");
+            string IsJSONArray = data.GetString("isjsonarray");
+            string Uid = data.GetString("uid");
+            string Pid = data.GetString("pid");
+            string LoginUrl = data.GetString("loginurl");
 
 
             await Task.Run(() =>
